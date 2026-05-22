@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#111827"/><circle cx="170" cy="180" r="64" fill="#fff1f2"/><path d="M330 104c22 0 40 18 40 40v224c0 22-18 40-40 40s-40-18-40-40V144c0-22 18-40 40-40Z" fill="#ecfdf3"/><path d="M150 265h70c26 0 47 21 47 47v6c0 50-40 90-90 90s-90-40-90-90v-6c0-26 21-47 47-47h16Z" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#111827"/>
+  <circle cx="162" cy="176" r="62" fill="#fff1f2"/>
+  <path d="M322 96c24 0 44 20 44 44v232c0 24-20 44-44 44s-44-20-44-44V140c0-24 20-44 44-44Z" fill="#ecfdf3"/>
+  <path d="M145 258h74c28 0 51 23 51 51v7c0 52-42 94-94 94s-94-42-94-94v-7c0-28 23-51 51-51h12Z" fill="#fff"/>
+  <text x="256" y="468" text-anchor="middle" font-family="Arial" font-size="42" fill="#fff">🏫</text>
+</svg>

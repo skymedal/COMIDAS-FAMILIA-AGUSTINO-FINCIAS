@@ -1,5 +1,13 @@
-# Comidas Familia PWA V1
+# Comidas Familia PWA V1.2
 
-Sube esta carpeta completa a Netlify/Vercel/GitHub Pages. Abre la URL en Safari del iPad y usa Compartir > Añadir a pantalla de inicio.
+Mejoras:
+- Nueva pestaña Cole.
+- Menú escolar de mayo 2026 cargado.
+- Comparación comida del cole vs cena familiar.
+- Generador de cenas que intenta evitar repetir pasta, pescado, huevo, legumbre, arroz/patata.
+- Aviso mensual si falta menú del cole.
+- Flujo: subir PDF a ChatGPT cada mes y actualizar `school-menu.js`.
 
-Incluye menú lunes-viernes, comidas adultos, cenas familiares, pizza viernes, lista de compra, PDF/imprimir A4 y modo instalable.
+Para actualizar GitHub:
+Sube/sustituye todos los archivos en la raíz del repositorio.
+Importante: ahora hay un archivo nuevo: `school-menu.js`.
