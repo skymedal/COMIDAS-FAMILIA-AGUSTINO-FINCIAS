@@ -1,7 +1,7 @@
 {
   "name": "Comidas Familia",
   "short_name": "Comidas",
-  "description": "Planificador semanal familiar con menú del cole",
+  "description": "Planificador familiar con platos personalizados",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f7f7f9",

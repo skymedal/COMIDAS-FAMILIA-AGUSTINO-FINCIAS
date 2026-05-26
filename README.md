@@ -1,13 +1,10 @@
-# Comidas Familia PWA V1.2
+# Comidas Familia PWA V1.3
 
-Mejoras:
-- Nueva pestaña Cole.
-- Menú escolar de mayo 2026 cargado.
-- Comparación comida del cole vs cena familiar.
-- Generador de cenas que intenta evitar repetir pasta, pescado, huevo, legumbre, arroz/patata.
-- Aviso mensual si falta menú del cole.
-- Flujo: subir PDF a ChatGPT cada mes y actualizar `school-menu.js`.
+- Botón “Quiero comer esto”.
+- Añadir plato libre a día concreto.
+- Guardar plato en rueda de menús.
+- Frecuencia y etiquetas.
+- Pestaña Mis platos.
+- Candados más claros.
 
-Para actualizar GitHub:
-Sube/sustituye todos los archivos en la raíz del repositorio.
-Importante: ahora hay un archivo nuevo: `school-menu.js`.
+Sube todos los archivos sueltos a GitHub, sustituyendo los anteriores.
