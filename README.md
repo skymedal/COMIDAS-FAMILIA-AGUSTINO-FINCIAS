@@ -1,10 +1,9 @@
-# Comidas Familia PWA V1.3
+# Comidas Familia PWA V1.3.1 - Fechas
 
-- Botón “Quiero comer esto”.
-- Añadir plato libre a día concreto.
-- Guardar plato en rueda de menús.
-- Frecuencia y etiquetas.
-- Pestaña Mis platos.
-- Candados más claros.
+Parche puntual:
+- La app muestra la semana actual, no la siguiente.
+- Las tarjetas ya no duplican “Lunes / Lun”.
+- Cada tarjeta muestra el día de la semana y debajo el número/mes correspondiente.
 
-Sube todos los archivos sueltos a GitHub, sustituyendo los anteriores.
+Archivos a subir/sustituir en GitHub:
+index.html, app.js, styles.css, school-menu.js, manifest.webmanifest, sw.js, icon.svg, README.md
