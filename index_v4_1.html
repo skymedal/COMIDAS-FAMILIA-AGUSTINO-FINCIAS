@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menú Familiar v4.1</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #697386;
+      --primary: #2563eb;
+      --primary-soft: #e8f0ff;
+      --border: #d8deea;
+      --ok: #16a34a;
+      --warn: #f59e0b;
+      --bad: #dc2626;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 18px 16px 12px;
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: var(--shadow);
+    }
+
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 4px 0 0; opacity: .9; font-size: 13px; }
+
+    main { max-width: 980px; margin: 0 auto; padding: 16px; }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn, button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active, button.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hidden { display: none !important; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .space { justify-content: space-between; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .title { font-size: 19px; margin: 0 0 4px; }
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .week-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .day {
+      border: 1px solid var(--border);
+      background: #fbfcff;
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 180px;
+    }
+
+    .day h3 { margin: 0 0 8px; font-size: 15px; }
+    .meal-label { font-size: 11px; color: var(--muted); font-weight: 800; margin-top: 10px; text-transform: uppercase; }
+    .meal { font-size: 14px; margin: 4px 0; line-height: 1.35; }
+
+    textarea, input, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      font: inherit;
+      background: white;
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+
+    .history-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: #fbfcff;
+    }
+
+    .status-good { color: var(--ok); }
+    .status-mid { color: var(--warn); }
+    .status-bad { color: var(--bad); }
+
+    @media (max-width: 780px) {
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+      .day-grid { grid-template-columns: 1fr; }
+      .week-nav { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      header, .tabs, .no-print, button { display: none !important; }
+      main { padding: 0; }
+      .card { box-shadow: none; border: none; }
+      .day-grid { grid-template-columns: repeat(5, 1fr); }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Menú Familiar v4.1</h1>
+    <p>PDF escolar actualizado · semanas navegables · histórico útil</p>
+  </header>
+
+  <main>
+    <nav class="tabs no-print">
+      <button class="tab-btn active" data-tab="menu">Menú</button>
+      <button class="tab-btn" data-tab="cole">Cole</button>
+      <button class="tab-btn" data-tab="historial">Histórico</button>
+      <button class="tab-btn" data-tab="reglas">Reglas</button>
+    </nav>
+
+    <section id="tab-menu">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2 class="title" id="weekTitle">Semana</h2>
+            <div class="muted" id="weekSubtitle">Lunes a viernes</div>
+          </div>
+          <span class="badge" id="schoolPdfBadge">Sin PDF escolar</span>
+        </div>
+
+        <div class="week-nav no-print">
+          <button id="prevWeekBtn">‹ Semana anterior</button>
+          <button id="currentWeekBtn">Semana actual</button>
+          <button id="nextWeekBtn">Semana siguiente ›</button>
+        </div>
+
+        <div class="row no-print">
+          <button class="primary" id="generateBtn">Generar menú para esta semana</button>
+          <button id="duplicateBtn">Duplicar semana</button>
+          <button id="printBtn">Imprimir / PDF</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="weekMenu" class="day-grid"></div>
+      </div>
+    </section>
+
+    <section id="tab-cole" class="hidden">
+      <div class="card">
+        <h2 class="title">Menú del cole</h2>
+        <p class="muted">La pestaña Cole ya no se queda anclada en Mayo: al cargar texto nuevo detecta mes/año y actualiza el PDF actual.</p>
+        <div class="row space">
+          <strong id="schoolPdfCurrent">PDF actual: sin cargar</strong>
+          <button id="clearSchoolBtn">Borrar PDF escolar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <label><strong>Pega aquí el contenido del PDF del colegio</strong></label>
+        <p class="muted">Puedes pegar el texto extraído del PDF. Si aparece “junio” o una fecha de junio, se mostrará Junio 2026.</p>
+        <textarea id="schoolText" placeholder="Pega aquí el menú escolar de junio..."></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="primary" id="saveSchoolBtn">Guardar menú escolar</button>
+          <button id="sampleJuneBtn">Cargar ejemplo Junio</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Vista rápida del cole</h3>
+        <div id="schoolPreview" class="muted">Todavía no hay menú escolar cargado.</div>
+      </div>
+    </section>
+
+    <section id="tab-historial" class="hidden">
+      <div class="card">
+        <h2 class="title">Histórico de semanas</h2>
+        <p class="muted">Aquí quedan guardadas las semanas generadas para poder verlas, duplicarlas o marcarlas.</p>
+        <div id="historyList"></div>
+      </div>
+    </section>
+
+    <section id="tab-reglas" class="hidden">
+      <div class="card">
+        <h2 class="title">Reglas familiares</h2>
+        <ul>
+          <li>Solo lunes a viernes.</li>
+          <li>Viernes: pizza.</li>
+          <li>Miércoles: cena fácil tipo brócoli + rabas.</li>
+          <li>Pasta máximo 2 veces por semana.</li>
+          <li>Huevos 1–2 veces por semana.</li>
+          <li>Evitar alubias y pimiento.</li>
+          <li>Si el cole da carne, cena mejor pescado/huevo; si da pescado, cena carne/huevo.</li>
+          <li>Priorizar airfryer, horno, plancha y cenas de menos de 30 minutos.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+    const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+    const STORAGE_KEYS = {
+      currentWeek: "mf_v41_current_week_start",
+      weeks: "mf_v41_weeks",
+      school: "mf_v41_school_pdf"
+    };
+
+    let currentWeekStart = getMonday(new Date());
+    const savedWeek = localStorage.getItem(STORAGE_KEYS.currentWeek);
+    if (savedWeek) currentWeekStart = parseISODate(savedWeek);
+
+    const defaultMeals = {
+      lunch: [
+        "Ensalada de tomate y aguacate + pollo a la plancha",
+        "Lentejas suaves con verduras",
+        "Arroz con pollo y verduras",
+        "Salmón con patata en airfryer",
+        "Pizza familiar + ensalada sencilla"
+      ],
+      dinner: [
+        "Tortilla francesa + tomate cherry y mozzarella",
+        "Merluza o pescado blanco + calabacín a la plancha",
+        "Brócoli + rabas en airfryer",
+        "Gulas con huevo + ensalada rápida",
+        "Cena libre sencilla"
+      ]
+    };
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function dateKey(date) { return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`; }
+    function parseISODate(str) {
+      const [y,m,d] = str.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+    function addDays(date, days) {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    }
+    function getMonday(date) {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      d.setDate(d.getDate() + diff);
+      d.setHours(0,0,0,0);
+      return d;
+    }
+    function formatWeekRange(start) {
+      const end = addDays(start, 4);
+      const sameMonth = start.getMonth() === end.getMonth();
+      const sameYear = start.getFullYear() === end.getFullYear();
+      if (sameMonth && sameYear) return `${start.getDate()}–${end.getDate()} ${MONTHS[start.getMonth()]} ${start.getFullYear()}`;
+      if (sameYear) return `${start.getDate()} ${MONTHS[start.getMonth()]} – ${end.getDate()} ${MONTHS[end.getMonth()]} ${start.getFullYear()}`;
+      return `${start.getDate()} ${MONTHS[start.getMonth()]} ${start.getFullYear()} – ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}`;
+    }
+
+    function loadWeeks() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.weeks) || "{}"); }
+    function saveWeeks(weeks) { localStorage.setItem(STORAGE_KEYS.weeks, JSON.stringify(weeks)); }
+    function loadSchool() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.school) || "null"); }
+    function saveSchool(school) { localStorage.setItem(STORAGE_KEYS.school, JSON.stringify(school)); }
+
+    function detectSchoolMonthYear(text) {
+      const lower = text.toLowerCase();
+      const yearMatch = lower.match(/20\d{2}/);
+      const year = yearMatch ? Number(yearMatch[0]) : new Date().getFullYear();
+      const foundMonthIndex = MONTHS.findIndex(m => lower.includes(m));
+      if (foundMonthIndex >= 0) return { month: MONTHS[foundMonthIndex], monthIndex: foundMonthIndex, year };
+
+      const dateMatch = lower.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-]?(20\d{2})?\b/);
+      if (dateMatch) {
+        const monthIndex = Number(dateMatch[2]) - 1;
+        return { month: MONTHS[monthIndex] || "mes desconocido", monthIndex, year: dateMatch[3] ? Number(dateMatch[3]) : year };
+      }
+      return { month: "mes no detectado", monthIndex: null, year };
+    }
+
+    function generateWeek(start) {
+      const school = loadSchool();
+      const week = {
+        id: dateKey(start),
+        range: formatWeekRange(start),
+        status: "",
+        favorite: false,
+        createdAt: new Date().toISOString(),
+        schoolPdf: school ? `${capitalize(school.month)} ${school.year}` : "Sin PDF escolar",
+        days: DAYS.map((day, i) => ({
+          day,
+          date: dateKey(addDays(start, i)),
+          schoolLunch: school ? inferSchoolLunch(school.text, i) : "Sin dato del cole",
+          adultLunch: defaultMeals.lunch[i],
+          dinner: chooseDinner(i, school)
+        }))
+      };
+      const weeks = loadWeeks();
+      weeks[week.id] = week;
+      saveWeeks(weeks);
+      render();
+    }
+
+    function inferSchoolLunch(text, index) {
+      const lines = text.split(/\n|\.|;/).map(l => l.trim()).filter(Boolean);
+      const candidates = lines.filter(l => l.length > 8 && l.length < 120);
+      return candidates[index] || "Comida del cole cargada";
+    }
+
+    function chooseDinner(index, school) {
+      if (index === 2) return "Brócoli + rabas en airfryer";
+      if (index === 4) return "Pizza familiar + ensalada sencilla";
+      return defaultMeals.dinner[index];
+    }
+
+    function duplicateCurrentWeek() {
+      const weeks = loadWeeks();
+      const key = dateKey(currentWeekStart);
+      if (!weeks[key]) return generateWeek(currentWeekStart);
+      const next = addDays(currentWeekStart, 7);
+      const newKey = dateKey(next);
+      const copy = JSON.parse(JSON.stringify(weeks[key]));
+      copy.id = newKey;
+      copy.range = formatWeekRange(next);
+      copy.createdAt = new Date().toISOString();
+      copy.days = copy.days.map((d, i) => ({ ...d, date: dateKey(addDays(next, i)) }));
+      weeks[newKey] = copy;
+      saveWeeks(weeks);
+      currentWeekStart = next;
+      persistCurrentWeek();
+      render();
+    }
+
+    function persistCurrentWeek() { localStorage.setItem(STORAGE_KEYS.currentWeek, dateKey(currentWeekStart)); }
+    function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ""; }
+
+    function render() {
+      persistCurrentWeek();
+      renderWeek();
+      renderSchool();
+      renderHistory();
+    }
+
+    function renderWeek() {
+      const weeks = loadWeeks();
+      const key = dateKey(currentWeekStart);
+      const week = weeks[key];
+      const school = loadSchool();
+      document.getElementById("weekTitle").textContent = `Semana ${formatWeekRange(currentWeekStart)}`;
+      document.getElementById("weekSubtitle").textContent = week ? "Menú generado" : "Todavía no hay menú generado para esta semana";
+      document.getElementById("schoolPdfBadge").textContent = school ? `Cole: ${capitalize(school.month)} ${school.year}` : "Sin PDF escolar";
+
+      const container = document.getElementById("weekMenu");
+      if (!week) {
+        container.innerHTML = `<div class="muted">No existe menú para esta semana. Pulsa “Generar menú para esta semana”.</div>`;
+        return;
+      }
+      container.innerHTML = week.days.map(d => `
+        <article class="day">
+          <h3>${d.day}</h3>
+          <div class="muted">${formatDateShort(parseISODate(d.date))}</div>
+          <div class="meal-label">Cole</div>
+          <p class="meal">${escapeHtml(d.schoolLunch)}</p>
+          <div class="meal-label">Comida adultos</div>
+          <p class="meal">${escapeHtml(d.adultLunch)}</p>
+          <div class="meal-label">Cena familiar</div>
+          <p class="meal">${escapeHtml(d.dinner)}</p>
+        </article>
+      `).join("");
+    }
+
+    function formatDateShort(date) { return `${date.getDate()} ${MONTHS[date.getMonth()]}`; }
+
+    function renderSchool() {
+      const school = loadSchool();
+      const current = document.getElementById("schoolPdfCurrent");
+      const preview = document.getElementById("schoolPreview");
+      if (!school) {
+        current.textContent = "PDF actual: sin cargar";
+        preview.textContent = "Todavía no hay menú escolar cargado.";
+        return;
+      }
+      current.textContent = `PDF actual: ${capitalize(school.month)} ${school.year}`;
+      preview.innerHTML = `<strong>${capitalize(school.month)} ${school.year}</strong><br>${escapeHtml(school.text.slice(0, 500))}${school.text.length > 500 ? "..." : ""}`;
+    }
+
+    function renderHistory() {
+      const weeks = Object.values(loadWeeks()).sort((a,b) => b.id.localeCompare(a.id));
+      const list = document.getElementById("historyList");
+      if (!weeks.length) {
+        list.innerHTML = `<div class="muted">Todavía no hay semanas guardadas.</div>`;
+        return;
+      }
+      list.innerHTML = weeks.map(w => `
+        <div class="history-item">
+          <div class="row space">
+            <strong>Semana ${escapeHtml(w.range)}</strong>
+            <span class="muted">${escapeHtml(w.schoolPdf || "")}</span>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button onclick="goToWeek('${w.id}')">Ver</button>
+            <button onclick="setWeekStatus('${w.id}', '⭐ Gustó mucho')">⭐ Gustó mucho</button>
+            <button onclick="setWeekStatus('${w.id}', '😐 Regular')">😐 Regular</button>
+            <button onclick="setWeekStatus('${w.id}', '❌ No repetir')">❌ No repetir</button>
+          </div>
+          <div class="muted" style="margin-top:6px">${escapeHtml(w.status || "Sin valoración")}</div>
+        </div>
+      `).join("");
+    }
+
+    window.goToWeek = function(key) {
+      currentWeekStart = parseISODate(key);
+      showTab("menu");
+      render();
+    }
+
+    window.setWeekStatus = function(key, status) {
+      const weeks = loadWeeks();
+      if (weeks[key]) {
+        weeks[key].status = status;
+        weeks[key].favorite = status.includes("⭐");
+        saveWeeks(weeks);
+        renderHistory();
+      }
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+      ["menu", "cole", "historial", "reglas"].forEach(id => {
+        document.getElementById(`tab-${id}`).classList.toggle("hidden", id !== tab);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => showTab(btn.dataset.tab)));
+    document.getElementById("prevWeekBtn").addEventListener("click", () => { currentWeekStart = addDays(currentWeekStart, -7); render(); });
+    document.getElementById("currentWeekBtn").addEventListener("click", () => { currentWeekStart = getMonday(new Date()); render(); });
+    document.getElementById("nextWeekBtn").addEventListener("click", () => { currentWeekStart = addDays(currentWeekStart, 7); render(); });
+    document.getElementById("generateBtn").addEventListener("click", () => generateWeek(currentWeekStart));
+    document.getElementById("duplicateBtn").addEventListener("click", duplicateCurrentWeek);
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+    document.getElementById("saveSchoolBtn").addEventListener("click", () => {
+      const text = document.getElementById("schoolText").value.trim();
+      if (!text) return alert("Pega primero el texto del PDF del colegio.");
+      const detected = detectSchoolMonthYear(text);
+      saveSchool({ text, month: detected.month, monthIndex: detected.monthIndex, year: detected.year, savedAt: new Date().toISOString() });
+      render();
+      alert(`Menú escolar cargado: ${capitalize(detected.month)} ${detected.year}`);
+    });
+
+    document.getElementById("clearSchoolBtn").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEYS.school);
+      document.getElementById("schoolText").value = "";
+      render();
+    });
+
+    document.getElementById("sampleJuneBtn").addEventListener("click", () => {
+      document.getElementById("schoolText").value = "Menú escolar junio 2026\nLunes: crema de verduras y pollo al horno\nMartes: arroz con tomate y pescado\nMiércoles: pasta con verduras y tortilla\nJueves: lentejas con arroz y fruta\nViernes: ensalada completa y merluza";
+    });
+
+    render();
+  </script>
+</body>
+</html>
