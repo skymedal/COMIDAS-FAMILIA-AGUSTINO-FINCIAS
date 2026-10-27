@@ -31,11 +31,10 @@ service cloud.firestore {
     match /families/{fid} {
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow read: if isMember(fid);
-      // Los miembros pueden cambiar el nombre, pero no el dueño, el código ni el token de Home Assistant.
+      // Los miembros pueden cambiar el nombre, pero no el dueño ni el código.
       allow update: if isMember(fid)
         && request.resource.data.ownerUid == resource.data.ownerUid
-        && request.resource.data.joinCode == resource.data.joinCode
-        && request.resource.data.haToken == resource.data.haToken;
+        && request.resource.data.joinCode == resource.data.joinCode;
       allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
 
       // Unirse: solo uno mismo, y solo el dueño o quien tenga el código de la familia.
@@ -60,14 +59,6 @@ service cloud.firestore {
       allow create: if signedIn()
         && family(request.resource.data.familyId).ownerUid == request.auth.uid
         && family(request.resource.data.familyId).joinCode == code;
-    }
-
-    // Resumen para Home Assistant: se lee sin login, pero solo conociendo el token secreto.
-    match /ha/{token} {
-      allow get: if true;
-      allow list: if false;
-      allow write: if isMember(request.resource.data.familyId)
-        && family(request.resource.data.familyId).haToken == token;
     }
 
     // Sugerencias y fallos: cualquiera con sesión puede enviar; se leen desde la consola de Firebase.
