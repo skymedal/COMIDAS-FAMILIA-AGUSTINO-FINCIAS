@@ -1,0 +1,94 @@
+# Comidas Familia → Home Assistant
+# Copia este archivo en /config/packages/comidas_familia.yaml
+# (en configuration.yaml debe estar:  homeassistant:  packages: !include_dir_named packages)
+
+rest:
+  - resource: !secret comidas_familia_url
+    scan_interval: 1800 # cada 30 minutos
+    sensor:
+      - name: "Comidas familia datos"
+        unique_id: comidas_familia_datos
+        icon: mdi:silverware-fork-knife
+        # estado = cuándo se guardó por última vez desde la app
+        value_template: >
+          {{ (value_json.fields.haJson.stringValue | from_json).actualizado[:16] | replace('T', ' ') }}
+        json_attributes_path: "$.fields.haJson"
+        json_attributes:
+          - stringValue
+
+template:
+  - sensor:
+      - name: "Cena de hoy"
+        unique_id: comidas_cena_hoy
+        icon: mdi:food-variant
+        state: >
+          {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+          {% set d = (raw | from_json).dias.get(now().strftime('%Y-%m-%d')) if raw else none %}
+          {{ (d.cena if d and d.cena else 'Sin plan')[:250] }}
+        attributes:
+          comida: >
+            {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+            {% set d = (raw | from_json).dias.get(now().strftime('%Y-%m-%d')) if raw else none %}
+            {{ d.comida if d else '' }}
+          cole: >
+            {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+            {% set d = (raw | from_json).dias.get(now().strftime('%Y-%m-%d')) if raw else none %}
+            {{ d.cole if d else '' }}
+          aviso: >
+            {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+            {% set d = (raw | from_json).dias.get(now().strftime('%Y-%m-%d')) if raw else none %}
+            {{ d.aviso if d else '' }}
+
+      - name: "Cena de mañana"
+        unique_id: comidas_cena_manana
+        icon: mdi:food-variant
+        state: >
+          {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+          {% set d = (raw | from_json).dias.get((now() + timedelta(days=1)).strftime('%Y-%m-%d')) if raw else none %}
+          {{ (d.cena if d and d.cena else 'Sin plan')[:250] }}
+        attributes:
+          descongelar: >
+            {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+            {% set d = (raw | from_json).dias.get((now() + timedelta(days=1)).strftime('%Y-%m-%d')) if raw else none %}
+            {{ d.descongelar if d else [] }}
+          cole: >
+            {% set raw = state_attr('sensor.comidas_familia_datos', 'stringValue') %}
+            {% set d = (raw | from_json).dias.get((now() + timedelta(days=1)).strftime('%Y-%m-%d')) if raw else none %}
+            {{ d.cole if d else '' }}
+
+automation:
+  - id: comidas_aviso_descongelar
+    alias: "Comidas: sacar del congelador"
+    description: "La noche anterior avisa si la cena de mañana lleva algo que suele estar congelado."
+    triggers:
+      - trigger: time
+        at: "20:30:00"
+    conditions:
+      - condition: template
+        value_template: "{{ state_attr('sensor.cena_de_manana', 'descongelar') | default([], true) | count > 0 }}"
+    actions:
+      - action: notify.mobile_app_TU_MOVIL # ← cambia por tu servicio de notificaciones
+        data:
+          title: "🧊 Para mañana"
+          message: >
+            Mañana cenáis {{ states('sensor.cena_de_manana') }}.
+            Saca del congelador: {{ state_attr('sensor.cena_de_manana', 'descongelar') | join(', ') }}.
+
+  - id: comidas_que_cenamos_hoy
+    alias: "Comidas: qué cenamos hoy"
+    description: "Entre semana por la tarde: la cena de hoy y lo que han comido en el cole."
+    triggers:
+      - trigger: time
+        at: "18:00:00"
+    conditions:
+      - condition: time
+        weekday: [mon, tue, wed, thu, fri]
+      - condition: template
+        value_template: "{{ states('sensor.cena_de_hoy') not in ['Sin plan', 'unknown', 'unavailable'] }}"
+    actions:
+      - action: notify.mobile_app_TU_MOVIL # ← cambia por tu servicio de notificaciones
+        data:
+          title: "🍽️ Hoy cenamos"
+          message: >
+            {{ states('sensor.cena_de_hoy') }}.
+            {% set cole = state_attr('sensor.cena_de_hoy', 'cole') %}{% if cole %}En el cole: {{ cole }}.{% endif %}
