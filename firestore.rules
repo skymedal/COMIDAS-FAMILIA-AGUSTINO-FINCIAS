@@ -1,0 +1,82 @@
+rules_version = '2';
+
+// Reglas de seguridad de Comidas Familia (v5 beta: login con Google y familias separadas).
+// Se pegan en Firebase Console → Firestore Database → Reglas → Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function family(fid) {
+      return get(/databases/$(database)/documents/families/$(fid)).data;
+    }
+    function isMember(fid) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/families/$(fid)/members/$(request.auth.uid));
+    }
+
+    // Versión antigua (v4.x, sin login). Se deja abierta SOLO mientras se usa a la vez que la beta.
+    // Cuando hayas importado tus datos en la beta, cambia esta línea por:
+    //   match /familia/{doc} { allow read, write: if false; }
+    match /familia/{doc} {
+      allow read, write: if true;
+    }
+
+    // Cada usuario solo ve y cambia su propia ficha (a qué familia pertenece).
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /families/{fid} {
+      allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow read: if isMember(fid);
+      // Los miembros pueden cambiar el nombre, pero no el dueño, el código ni el token de Home Assistant.
+      allow update: if isMember(fid)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.joinCode == resource.data.joinCode
+        && request.resource.data.haToken == resource.data.haToken;
+      allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+
+      // Unirse: solo uno mismo, y solo el dueño o quien tenga el código de la familia.
+      match /members/{uid} {
+        allow read: if isMember(fid);
+        allow create, update: if signedIn() && request.auth.uid == uid
+          && (family(fid).ownerUid == uid || request.resource.data.code == family(fid).joinCode);
+        allow delete: if signedIn()
+          && (request.auth.uid == uid || family(fid).ownerUid == request.auth.uid);
+      }
+
+      // Menús, cole, favoritos, reglas…: solo los miembros.
+      match /data/{doc} {
+        allow read, write: if isMember(fid);
+      }
+    }
+
+    // Código de invitación → familia. Se puede consultar un código concreto, nunca listarlos.
+    match /joinCodes/{code} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && family(request.resource.data.familyId).ownerUid == request.auth.uid
+        && family(request.resource.data.familyId).joinCode == code;
+    }
+
+    // Resumen para Home Assistant: se lee sin login, pero solo conociendo el token secreto.
+    match /ha/{token} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if isMember(request.resource.data.familyId)
+        && family(request.resource.data.familyId).haToken == token;
+    }
+
+    // Sugerencias y fallos: cualquiera con sesión puede enviar; se leen desde la consola de Firebase.
+    match /feedback/{id} {
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 4000;
+      allow read, update, delete: if false;
+    }
+  }
+}

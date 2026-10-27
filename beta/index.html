@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comidas Familia (beta)</title><meta name="theme-color" content="#FAFAF6">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FAFAF6;--sheet:#FFFFFF;--ink:#1F2A1E;--soft:#5C6659;--line:#E3E5DB;--plum:#5A2D5C;--plum-ink:#FFFFFF;--olive:#5E7424;--olive-tint:#EEF1E1;--sky:#2C6A9E;--sky-tint:#E7F0F7;--yolk:#F2C230;--yolk-tint:#FFF6D6;--red:#B42318;--red-tint:#FDECEA;--ok:#2F6B2F;--ok-tint:#E9F4E6;--warn:#8A5A00;--warn-tint:#FFF3D6;--display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,sans-serif;--r-lg:18px;--r-md:12px;--r-sm:8px}
+@media(prefers-color-scheme:dark){:root{--paper:#141813;--sheet:#1C211B;--ink:#ECEFE6;--soft:#A3AC9E;--line:#2E352C;--plum:#C9A3CB;--plum-ink:#1E0F1F;--olive:#B5C97A;--olive-tint:#252C1C;--sky:#8DBBE0;--sky-tint:#18242E;--yolk:#F2C230;--yolk-tint:#2E2711;--red:#F19A92;--red-tint:#341B19;--ok:#9DD39A;--ok-tint:#1B2A1B;--warn:#F0C46A;--warn-tint:#2E2513}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+main{max-width:1240px;margin:0 auto;padding:12px 16px 48px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.01em;line-height:1.1}
+h2{font-size:22px;font-weight:800;margin:0 0 4px}h3{font-size:17px;font-weight:700;margin:16px 0 8px}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+/* header */
+.top{padding:6px 0 10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-size:20px;font-weight:800;margin:0}
+.logo{font-size:22px}
+.sync{font-size:13px;color:var(--soft)}
+.status{margin-left:auto;font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--olive-tint);color:var(--olive)}
+.weekbar{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:6px;margin-top:14px}
+.weekbar-mid{text-align:center}
+.week-range{font-family:var(--display);font-weight:800;font-size:clamp(22px,6vw,34px);line-height:1.05}
+button.link{background:none;border:0;padding:4px 6px;color:var(--sky);font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+button.icon{width:44px;height:44px;padding:0;border-radius:50%;font-size:24px;line-height:1;display:grid;place-items:center}
+.school-banner{display:flex;align-items:center;gap:12px;background:var(--sky-tint);color:var(--ink);border-left:4px solid var(--sky);border-radius:var(--r-md);padding:10px 12px;margin:10px 0 12px}
+.school-banner strong{display:block;font-size:15px}.school-banner span{font-size:14px;color:var(--soft)}
+.school-banner button{margin-left:auto;flex:none}
+/* buttons */
+button{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:var(--r-md);padding:11px 14px;cursor:pointer;min-height:44px}
+button:active{transform:translateY(1px)}
+button.primary{background:var(--plum);border-color:var(--plum);color:var(--plum-ink)}
+button.green{background:var(--olive-tint);border-color:transparent;color:var(--olive)}
+button.soft{background:transparent}
+button.danger{background:transparent;color:var(--red);border-color:var(--red-tint)}
+button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.toolbar .primary{flex:1 1 200px}
+.toolbar #manualBtn{flex:1 1 160px}
+.toolbar .quiet{display:flex;gap:6px;flex:1 1 100%;flex-wrap:wrap}
+.toolbar .quiet button{min-height:38px;padding:7px 8px;font-size:14px;border-color:transparent;background:transparent;color:var(--soft)}
+.toolbar .quiet button.danger{color:var(--red)}
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;background:var(--paper);padding:8px 0;margin:0 -16px 12px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--line)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:transparent;color:var(--soft);border-radius:999px;padding:8px 14px;min-height:40px}
+.tab.active{background:var(--ink);color:var(--paper)}
+/* generic */
+.panel{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;margin-bottom:14px}
+.muted{color:var(--soft);font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.space{justify-content:space-between}
+.hidden{display:none!important}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:var(--line);color:var(--soft);font-size:13px;font-weight:700}
+.badge.ok{background:var(--sky-tint);color:var(--sky)}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;background:transparent;border:1px solid currentColor;font-size:12px;font-weight:700;margin:2px 4px 2px 0;opacity:.85}
+textarea,input,select{width:100%;border:1px solid var(--line);border-radius:var(--r-md);padding:12px;font:inherit;background:var(--paper);color:var(--ink)}
+textarea{min-height:170px;resize:vertical}
+.row input{flex:1 1 200px;width:auto}
+.school-day,.history-item,.shop-card,.rule-box,.fav-row,.rule-row{border-top:1px solid var(--line);padding:12px 0}
+.school-day:first-of-type,.fav-row:first-child,.rule-row:first-child,.history-item:first-child{border-top:0}
+.school-day strong{font-family:var(--display)}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 24px}
+.shop-card{border-top:0}.shop-card h3{margin-top:4px}
+label.check{display:flex;gap:10px;align-items:flex-start;margin:6px 0;font-size:15px}
+label.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--olive)}
+.small-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.small-actions button{min-height:36px;padding:6px 10px;font-size:14px;border-radius:var(--r-sm)}
+dialog{border:0;border-radius:var(--r-lg);padding:0;background:transparent;max-width:560px;width:calc(100% - 24px);color:var(--ink)}
+dialog::backdrop{background:rgba(20,24,19,.5)}
+.dialog-card{background:var(--sheet);border-radius:var(--r-lg);padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* week */
+.week-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px}
+.print-only{display:none}
+.day-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.day-card{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px}
+.day-card.today{border:2px solid var(--yolk);box-shadow:0 0 0 4px var(--yolk-tint)}
+.day-card.locked{background:var(--paper)}
+.day-head{display:flex;align-items:center;gap:12px}
+.day-num{font-family:var(--display);font-weight:800;font-size:48px;line-height:.9;letter-spacing:-.04em;min-width:1.2em}
+.day-card.today .day-num{color:#1F2A1E;background:var(--yolk);border-radius:var(--r-md);padding:4px 8px 6px}
+.day-name{font-family:var(--display);font-weight:700;font-size:20px;margin:0}
+.day-month{font-size:13px;color:var(--soft)}
+.today-flag{font-size:12px;font-weight:700;color:var(--warn)}
+.lock-flag{margin-left:auto}
+.cole{background:var(--sky-tint);border-radius:var(--r-md);padding:10px 12px;color:var(--ink)}
+.cole-label{font-size:13px;font-weight:700;color:var(--sky);margin-bottom:2px}
+.cole ul{margin:0;padding:0;list-style:none}
+.cole li{font-size:15px;line-height:1.3;padding:2px 0}
+.cole .tags{margin-top:6px;color:var(--sky)}
+.cole.empty{background:transparent;border:1px dashed var(--line);color:var(--soft);font-size:14px}
+.meal-row{padding:6px 0 2px;border-top:1px solid var(--line)}
+.meal-label{font-size:13px;color:var(--olive);font-weight:700;display:flex;gap:6px;align-items:center}
+.meal-label .who{color:var(--soft);font-weight:400}
+.meal{font-family:var(--display);font-size:19px;font-weight:700;line-height:1.2;margin:2px 0 6px}
+.meal-actions{display:flex;gap:4px;flex-wrap:wrap}
+.meal-actions button{min-height:36px;min-width:40px;padding:4px 10px;border-radius:var(--r-sm);font-size:15px;background:transparent}
+.meal-actions .swap{color:var(--plum);border-color:var(--line)}
+.meal-actions .on{background:var(--ink);color:var(--paper)}
+.like-on{background:var(--ok-tint)!important;border-color:var(--ok)!important}
+.dislike-on{background:var(--red-tint)!important;border-color:var(--red)!important}
+.part{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin-bottom:4px}.part .meal{flex:1 1 60%;margin:2px 0}.part-n{font-family:var(--body);font-size:13px;font-weight:700;color:var(--olive);margin-right:6px}.meal-actions.whole{margin-top:4px}
+.note{font-size:14px;padding:8px 10px;border-radius:var(--r-sm);background:var(--line)}
+.note.ok{background:var(--ok-tint);color:var(--ok)}.note.warn{background:var(--warn-tint);color:var(--warn)}
+.day-actions{display:flex;gap:6px;margin-top:auto}
+.day-actions button{min-height:36px;padding:6px 10px;font-size:14px;border-color:transparent;background:transparent;color:var(--soft)}
+.day-actions button.on{background:var(--ink);color:var(--paper)}
+@media(min-width:700px){.day-grid{grid-template-columns:repeat(2,1fr)}.toolbar .quiet{flex:0 1 auto;margin-left:auto}}
+@media(min-width:1100px){.meal-actions{gap:3px;flex-wrap:nowrap}.meal-actions button{min-width:0;padding:4px 7px;font-size:14px}.meal-actions .swap{padding:4px 8px}.day-card{padding:12px 10px 8px}.day-grid{grid-template-columns:repeat(5,1fr);gap:12px}.day-num{font-size:42px}.meal{font-size:17px}.top{display:flex;align-items:end;gap:24px}.weekbar{flex:1;max-width:560px;margin:0 0 0 auto}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{@page{size:A4 landscape;margin:7mm}
+.tabs,.toolbar,.weekbar,.school-banner,.no-print,button,dialog,.small-actions,.meal-actions,.day-actions,.status,.sync{display:none!important}
+body{background:white;color:#111;font-size:11px}main{padding:0;max-width:none}
+.top{padding:0 0 4px}.brand h1{font-size:16px}.print-only{display:block;font-size:14px;margin:0}
+.week-head{margin:0 0 6px}
+.day-grid{grid-template-columns:repeat(5,1fr);gap:5px}
+.day-card{border:1px solid #ccc;border-radius:8px;padding:7px;gap:5px;box-shadow:none!important;break-inside:avoid}
+.day-num{font-size:32px;background:none!important;padding:0!important}.day-name{font-size:16px}
+.cole{padding:7px;background:#EEF4FA}.cole li{font-size:12px}.cole-label{font-size:11px}.tag{font-size:9.5px}
+.meal-label{font-size:11px}.meal{font-size:15px;margin:2px 0 6px}.note{font-size:10.5px;padding:5px}.day-card{padding:9px;gap:8px}}
+
+.gate{position:fixed;inset:0;z-index:50;background:var(--paper);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:max(48px,env(safe-area-inset-top)) 16px 32px}
+.gate.hidden{display:none}
+body.gated main{display:none}
+.gate-card{width:100%;max-width:420px;text-align:center}
+.gate-logo{font-size:56px;line-height:1}
+.gate h1{font-family:var(--display);font-size:32px;margin:8px 0 4px}
+.gate-tag{color:var(--soft);margin:0 0 28px}
+.gate-btn{width:100%;margin-top:10px}
+.gate-section{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;text-align:left}
+.gate-section h3{margin:0 0 10px;font-family:var(--display)}
+.gate-or{color:var(--soft);margin:10px 0}
+.gate-msg{min-height:1.4em;margin-top:14px;color:var(--soft)}
+.gate-msg.err{color:var(--red)}
+.gate .link{margin-top:16px}
+.code-pill{font-family:ui-monospace,Menlo,monospace;font-size:22px;font-weight:700;letter-spacing:3px;padding:6px 14px;border-radius:var(--r-md);background:var(--yolk-tint);color:var(--ink)}
+#haUrl{display:block;word-break:break-all;font-size:12px;margin:6px 0;padding:8px;background:var(--paper);border-radius:var(--r-sm)}
+.beta-tag{font-family:var(--body);font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--yolk-tint);color:var(--warn);vertical-align:middle;margin-left:6px}
+.fb-btn{flex:none;min-height:36px;padding:4px 10px}
+#fbText{min-height:110px}
+</style>
+</head>
+<body class="gated">
+<div id="gate" class="gate"><div class="gate-card"><div class="gate-logo" aria-hidden="true">🍲</div><h1>Comidas Familia<span class="beta-tag">beta</span></h1><p class="gate-tag">El menú de la semana, cuadrado con el comedor del cole.</p>
+<div id="gateLoading"><p class="muted">Cargando…</p></div>
+<div id="gateLogin" class="hidden"><button class="primary gate-btn" id="googleBtn">Entrar con Google</button><p class="muted" style="font-size:13px;margin-top:14px">Versión de prueba para familias invitadas.</p></div>
+<div id="gateFamily" class="hidden"><p id="gateHello"></p>
+<div class="gate-section"><h3>Unirme a una familia</h3><p class="muted" style="margin-top:0">Si alguien de casa ya la usa, pídele su código.</p><input id="joinCodeInput" placeholder="Código de 6 caracteres" maxlength="8" autocapitalize="characters" autocomplete="off" /><button class="primary gate-btn" id="joinFamilyBtn">Unirme</button></div>
+<div class="gate-or">o</div>
+<div class="gate-section"><h3>Crear mi familia</h3><input id="familyNameInput" placeholder="Ej. Familia García" /><label class="check hidden" id="importOldRow"><input type="checkbox" id="importOldChk"> Importar los datos de la versión anterior</label><button class="gate-btn" id="createFamilyBtn">Crear familia</button></div>
+<button class="link" id="gateLogoutBtn">Usar otra cuenta de Google</button></div>
+<p id="gateMsg" class="gate-msg" role="status"></p></div></div>
+<main>
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">🍲</span><div><h1>Comidas Familia</h1><div class="sync" id="syncStatus">Conectando con la nube…</div></div><span class="status" id="statusBubble">Pendiente</span><button class="fb-btn" id="feedbackBtn" aria-label="Enviar sugerencia o fallo">💬</button></div><div class="weekbar no-print"><button id="prevWeekBtn" class="icon" aria-label="Semana anterior">‹</button><div class="weekbar-mid"><div id="heroSubtitle" class="week-range">Semana</div><button id="currentWeekBtn2" class="link">Ir a esta semana</button></div><button id="nextWeekBtn" class="icon" aria-label="Semana siguiente">›</button></div></header>
+<section class="school-banner no-print"><div><strong id="schoolBannerTitle">🏫 Falta el menú del cole</strong><span id="schoolBannerText">Sube el PDF del comedor en la pestaña Cole.</span></div><button id="goColeBtn">Ver cole</button></section>
+<section class="toolbar no-print"><button class="primary" id="generateBtn">Generar semana</button><button id="manualBtn">Quiero comer…</button><div class="quiet"><button id="currentWeekBtn" class="hidden">Hoy</button><button id="duplicateBtn">Duplicar a la siguiente</button><button id="printBtn">Exportar PDF</button><button class="danger" id="resetThisWeekBtn">Borrar semana</button></div></section>
+<nav class="tabs no-print"><button class="tab active" data-tab="menu">Menú</button><button class="tab" data-tab="cole">Cole</button><button class="tab" data-tab="compra">Compra</button><button class="tab" data-tab="favoritos">Favoritos</button><button class="tab" data-tab="historial">Histórico</button><button class="tab" data-tab="reglas">Reglas</button></nav>
+<section id="tab-menu"><div class="week-head"><div><h2 class="print-only" id="weekTitle">Semana</h2><div class="muted" id="weekSubtitle">Lunes a viernes</div></div><span class="badge" id="schoolBadge">Sin menú escolar</span></div><div id="weekMenu" class="day-grid"></div></section>
+<section id="tab-cole" class="hidden"><div class="panel"><div class="row space"><div><h2 style="margin:0">Menú del cole</h2><p class="muted">Pega el texto del PDF escolar. La app detecta mes/año y lo usa para compensar cenas.</p></div><button class="danger" id="clearSchoolBtn">Borrar menú escolar</button></div><p><strong id="schoolCurrent">PDF actual: sin cargar</strong></p></div><div class="panel"><div class="row" style="margin-bottom:6px"><button class="primary" id="uploadPdfBtn">📎 Subir PDF del cole</button><input type="file" id="schoolPdfInput" accept="application/pdf" class="hidden" /></div><div class="muted" id="schoolPdfStatus">Sube el PDF y la app extrae el texto sola. Revisa el resultado abajo antes de guardar.</div></div><div class="panel"><label><strong>Pega aquí el contenido del PDF del colegio</strong></label><textarea id="schoolText" placeholder="Ejemplo: Menú junio 2026&#10;Lunes: arroz con tomate y pescado..."></textarea><div class="row" style="margin-top:12px"><button class="primary" id="saveSchoolBtn">Guardar menú escolar</button><button id="sampleJuneBtn">Cargar ejemplo junio</button></div></div><div class="panel"><h3 style="margin-top:0">Vista rápida</h3><div id="schoolPreview" class="muted">Todavía no hay menú escolar cargado.</div></div></section>
+<section id="tab-compra" class="hidden"><div class="panel"><div class="row space"><div><h2 style="margin:0">Lista de la compra</h2><p class="muted">Se genera con la semana visible. Los checks se guardan.</p></div><button id="clearChecksBtn">Desmarcar todo</button></div><div id="shoppingList" class="shop-grid"></div></div></section>
+<section id="tab-favoritos" class="hidden"><div class="panel"><h2 style="margin-top:0">Favoritos</h2><p class="muted">Platos que os gustan para recuperarlos rápido o priorizarlos en futuras semanas, sin repetirse dentro de la misma semana.</p><div id="favoritesList"></div></div><div class="panel"><h2 style="margin-top:0">Valoraciones</h2><p class="muted">👍 salen más a menudo al generar la semana · 👎 dejan de salir. Pulsa otra vez el mismo botón en la tarjeta, o «Quitar» aquí, para deshacerlo.</p><div id="ratingsList"></div></div></section>
+<section id="tab-historial" class="hidden"><div class="panel"><h2 style="margin-top:0">Histórico de semanas</h2><p class="muted">Revisa semanas anteriores, duplica las buenas y marca lo que no repetirías.</p><div id="historyList"></div></div></section>
+<section id="tab-reglas" class="hidden"><div class="panel" id="familyPanel"><h2 style="margin-top:0">👨‍👩‍👧 Tu familia</h2><p style="margin:0 0 8px"><strong id="famName"></strong></p><p class="muted">Para que otro adulto de casa vea el mismo menú: que entre con su cuenta de Google, pulse «Unirme» y escriba este código.</p><div class="row"><span class="code-pill" id="famCode"></span><button id="copyCodeBtn">Enviar invitación</button></div><p class="muted" style="margin-top:12px">Miembros: <span id="famMembers">…</span></p><details style="margin-top:8px"><summary>Home Assistant (opcional)</summary><p class="muted">Pon esta dirección como <code>comidas_familia_url</code> en <code>secrets.yaml</code>:</p><code id="haUrl"></code><button id="copyHaBtn">Copiar dirección</button></details><div class="row space" style="margin-top:14px"><span class="muted" id="whoami"></span><button id="logoutBtn">Cerrar sesión</button></div></div><div class="panel"><h2 style="margin-top:0">🚫 Ingredientes prohibidos</h2><p class="muted">Estos ingredientes nunca saldrán en los platos generados automáticamente (comida, cena y favoritos). No afecta a lo que añadas manualmente en "Quiero comer esto".</p><div id="restrictionsList"></div><div class="row" style="margin-top:12px"><input id="newRestrictionInput" placeholder="Ej. pimiento" /><button class="primary" id="addRestrictionBtn">➕ Añadir</button></div></div><div class="panel"><h2 style="margin-top:0">Reglas familiares</h2><p class="muted">El PDF del cole no modifica estas reglas. Puedes añadir o borrar tus propias reglas.</p><div id="rulesList"></div><div class="row" style="margin-top:12px"><input id="newRuleInput" placeholder="Ej. En verano meter gazpacho o ensalada fresca" /><button class="primary" id="addRuleBtn">➕ Añadir regla</button></div><div class="row" style="margin-top:12px"><button id="restoreRulesBtn">Restaurar reglas base</button><button class="danger" id="resetAllBtn">Reset completo</button></div></div></section>
+</main>
+<dialog id="manualDialog"><div class="dialog-card"><h2 style="margin-top:0">🍽️ Quiero comer esto</h2><p class="muted">Cambia una comida o cena concreta. Si quieres, también se guarda como favorito.</p><div class="grid2"><label>Día<select id="manualDay"></select></label><label>Tipo<select id="manualType"><option value="lunch">Comida adultos</option><option value="dinner">Cena familiar</option></select></label></div><label style="display:block;margin-top:10px">Plato<input id="manualName" placeholder="Ej. Sopa + merluza (con + separas 1º y 2º)" /></label><div class="grid2" style="margin-top:10px"><label>Grupo<select id="manualGroup"><option value="carne">Carne</option><option value="pescado">Pescado</option><option value="huevo">Huevo</option><option value="pasta">Pasta</option><option value="arroz">Arroz</option><option value="legumbre">Legumbre</option><option value="verdura">Verdura</option><option value="rapida">Rápida</option></select></label><label>Ingredientes<input id="manualItems" placeholder="separados por comas" /></label></div><label class="check"><input type="checkbox" id="manualFav" checked> Guardar también como favorito</label><div class="row" style="margin-top:14px"><button class="primary" id="manualSaveBtn">Guardar plato</button><button id="manualCancelBtn">Cancelar</button></div></div></dialog>
+<dialog id="feedbackDialog"><div class="dialog-card"><h2 style="margin-top:0">💬 Cuéntanos</h2><p class="muted">Lo que falla, lo que echas en falta o lo que te encanta. Se lee todo.</p><label>Tipo<select id="fbType"><option value="fallo">🐞 Algo falla</option><option value="idea">💡 Idea o mejora</option><option value="me-gusta">❤️ Me gusta</option><option value="otro">Otro</option></select></label><label style="display:block;margin-top:10px">Mensaje<textarea id="fbText" placeholder="Ej. Al subir el PDF de mi cole salen los días cambiados"></textarea></label><div class="row" style="margin-top:14px"><button class="primary" id="fbSendBtn">Enviar</button><button id="fbCancelBtn">Cancelar</button></div><p class="muted" id="fbStatus" role="status"></p></div></dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+(()=>{const DAYS=["Lunes","Martes","Miércoles","Jueves","Viernes"],MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],K={};
+const BASE_RESTRICTIONS=[];
+const BASE_RULES=["Solo lunes a viernes.","Viernes: pizza.","Miércoles: cena fácil, rápida o socorrida, no un plato fijo.","Pasta máximo 2 veces por semana.","Huevos 1–2 veces por semana.","Si el cole da carne, cena mejor pescado/huevo/verdura; si da pescado, cena carne/huevo/verdura.","Priorizar cenas sencillas de menos de 30 minutos."];
+const adultLunchPool=[
+{name:"Pollo a la plancha con tomate y aguacate",group:"carne",items:["pollo","tomate","aguacate"]},
+{name:"Arroz con pollo y verduras",group:"arroz",items:["arroz","pollo","verduras"]},
+{name:"Lentejas con verduras y arroz",group:"legumbre",items:["lentejas","arroz","verduras"]},
+{name:"Salmón con patata y brócoli",group:"pescado",items:["salmón","patatas","brócoli"]},
+{name:"Pasta con tomate y atún",group:"pasta",items:["pasta","tomate frito","atún"]},
+{name:"Tortilla de patata con ensalada",group:"huevo",items:["huevos","patatas","ensalada"]},
+{name:"Garbanzos con espinacas y bacalao",group:"legumbre",items:["garbanzos","espinacas","bacalao"]},
+{name:"Merluza a la plancha con patatas panadera",group:"pescado",items:["merluza","patatas"]},
+{name:"Solomillo de cerdo con pimientos y patatas",group:"carne",items:["solomillo de cerdo","pimientos","patatas"]},
+{name:"Paella de marisco y pollo",group:"arroz",items:["arroz","marisco","pollo"]},
+{name:"Espaguetis a la boloñesa",group:"pasta",items:["espaguetis","carne picada","tomate frito"]},
+{name:"Ensalada de pasta con atún y maíz",group:"pasta",items:["pasta","atún","maíz"]},
+{name:"Judías verdes con jamón y patata",group:"verdura",items:["judías verdes","jamón","patatas"]},
+{name:"Alubias con chorizo",group:"legumbre",items:["alubias","chorizo"]},
+{name:"Filetes de ternera con champiñones",group:"carne",items:["ternera","champiñones"]},
+{name:"Arroz con verduras y gambas",group:"arroz",items:["arroz","verduras","gambas"]},
+{name:"Revuelto de setas y gambas con arroz",group:"huevo",items:["huevos","setas","gambas","arroz"]},
+{name:"Guiso de pavo con zanahoria y patata",group:"carne",items:["pavo","zanahoria","patatas"]},
+{name:"Pescado a la plancha con ensalada de tomate",group:"pescado",items:["pescado blanco","tomate","ensalada"]},
+{name:"Crema de calabaza con picatostes y huevo duro",group:"verdura",items:["calabaza","pan","huevos"]}
+];
+const dinnerPool=[
+{name:"Tortilla francesa con tomate",group:"huevo",items:["huevos","tomate"],easy:true},
+{name:"Merluza o pescado blanco + calabacín",group:"pescado",items:["pescado blanco","calabacín"]},
+{name:"Brócoli + rabas en airfryer",group:"pescado",items:["brócoli","rabas"],easy:true},
+{name:"Gulas con huevo + ensalada rápida",group:"huevo",items:["gulas","huevos","ensalada"],easy:true},
+{name:"Alitas de pollo con verduras al horno",group:"carne",items:["alitas de pollo","verduras"],easy:true},
+{name:"Sándwich mixto de pavo y queso",group:"rapida",items:["pan de molde","pavo","queso"],easy:true},
+{name:"Crema de verduras + queso",group:"verdura",items:["verduras para crema","queso"],easy:true},
+{name:"Nuggets en airfryer con ensalada",group:"carne",items:["nuggets","ensalada"],easy:true},
+{name:"Pizza del viernes",group:"pizza",items:["pizza"]},
+{name:"Revuelto de champiñones y jamón",group:"huevo",items:["huevos","champiñones","jamón"],easy:true},
+{name:"Salmón al horno con espárragos",group:"pescado",items:["salmón","espárragos"]},
+{name:"Ensalada de pollo, aguacate y maíz",group:"carne",items:["pollo","aguacate","maíz"],easy:true},
+{name:"Croquetas caseras con ensalada",group:"rapida",items:["croquetas","ensalada"],easy:true},
+{name:"Wok de verduras con pollo",group:"verdura",items:["verduras salteadas","pollo"],easy:true},
+{name:"Tortitas de calabacín rebozadas",group:"verdura",items:["calabacín","huevo","pan rallado"],easy:true},
+{name:"Hamburguesa casera con ensalada",group:"carne",items:["carne picada","pan de hamburguesa","ensalada"]},
+{name:"Sopa de picadillo con huevo duro",group:"huevo",items:["caldo","fideos","huevos"],easy:true},
+{name:"Sardinas o boquerones a la plancha con ensalada",group:"pescado",items:["sardinas","ensalada"],easy:true},
+{name:"Pasta con verduras salteadas",group:"pasta",items:["pasta","verduras salteadas"],easy:true},
+{name:"Quesadillas de pollo y queso",group:"carne",items:["tortitas de trigo","pollo","queso"],easy:true}
+];
+function pad(n){return String(n).padStart(2,"0")}function key(d){return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}function parseDate(s){if(!s)return null;const[y,m,d]=s.split("-").map(Number);return y?new Date(y,m-1,d):null}function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);x.setHours(0,0,0,0);return x}function monday(d){const x=new Date(d),day=x.getDay(),diff=day===0?-6:1-day;x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x}function nextPlanningMonday(d=new Date()){return addDays(monday(d),7)}function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):""}function fmtRange(start){const end=addDays(start,4);if(start.getMonth()===end.getMonth()&&start.getFullYear()===end.getFullYear())return`${start.getDate()} al ${end.getDate()} de ${MONTHS[start.getMonth()]} ${start.getFullYear()}`;if(start.getFullYear()===end.getFullYear())return`${start.getDate()} de ${MONTHS[start.getMonth()]} al ${end.getDate()} de ${MONTHS[end.getMonth()]} ${start.getFullYear()}`;return`${start.getDate()} de ${MONTHS[start.getMonth()]} ${start.getFullYear()} al ${end.getDate()} de ${MONTHS[end.getMonth()]} ${end.getFullYear()}`}function fmtShort(d){return`${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`}
+let currentWeekStart=parseDate(localStorage.getItem(K.current))||monday(new Date());
+function getWeeks(){return JSON.parse(localStorage.getItem(K.weeks)||"{}")}function setWeeks(w){localStorage.setItem(K.weeks,JSON.stringify(w));scheduleCloudSave()}function getSchool(){return JSON.parse(localStorage.getItem(K.school)||"null")}function setSchool(s){localStorage.setItem(K.school,JSON.stringify(s));scheduleCloudSave()}function getChecks(){return JSON.parse(localStorage.getItem(K.checks)||"{}")}function setChecks(c){localStorage.setItem(K.checks,JSON.stringify(c));scheduleCloudSave()}function getFavs(){return JSON.parse(localStorage.getItem(K.favorites)||"{}")}function setFavs(f){localStorage.setItem(K.favorites,JSON.stringify(f));scheduleCloudSave()}function getRules(){let r=JSON.parse(localStorage.getItem(K.rules)||"null");if(!r){r=[...BASE_RULES];localStorage.setItem(K.rules,JSON.stringify(r))}return r}function setRules(r){localStorage.setItem(K.rules,JSON.stringify(r));scheduleCloudSave()}
+function getRestrictions(){let r=JSON.parse(localStorage.getItem(K.restrictions)||"null");if(!r){r=[...BASE_RESTRICTIONS];localStorage.setItem(K.restrictions,JSON.stringify(r))}return r}function setRestrictions(r){localStorage.setItem(K.restrictions,JSON.stringify(r));scheduleCloudSave()}
+function normalize(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function dishAllowed(dish,banned){if(!banned||!banned.length)return true;const text=normalize((dish?.name||"")+" "+(dish?.items||[]).join(" "));return!banned.some(b=>b&&text.includes(normalize(b)))}
+const firebaseConfig={apiKey:"AIzaSyB3PyIAaXGufOTuUfPfpWrdDDK5LR2BR6Q",authDomain:"comidas-familia.firebaseapp.com",projectId:"comidas-familia",storageBucket:"comidas-familia.firebasestorage.app",messagingSenderId:"95918637849",appId:"1:95918637849:web:a6c16d29b02cddb7b1bb88"};
+let db=null,applyingRemote=false,cloudSaveTimer=null,cloudReady=false;
+function setSyncStatus(text){const el=document.getElementById("syncStatus");if(el)el.textContent=text}
+/* Compact daily summary read by Home Assistant (REST sensor on familia/estado, field haJson) */
+const HA_PROTEINS=/pollo|pavo|ternera|cerdo|lomo|solomillo|carne picada|hamburgues|alitas|salchich|merluza|salmón|salmon|bacalao|gambas|langostino|sardina|boquer|palometa|pescado|lubina|dorada|calamar|sepia|gulas/;
+function buildHaSummary(){const weeks=getWeeks(),school=getSchool(),today=key(new Date()),from=key(addDays(new Date(),-7)),dias={};Object.values(weeks).forEach(w=>(w.days||[]).forEach(d=>{if(!d||!d.date||d.date<from)return;const sc=schoolCellFor(d,school),n=sc.live?note(sc.tags,d.dinner):d.note,clean=t=>String(t||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}️]/gu,"").trim();dias[d.date]={dia:d.day,cole:sc.dishes.join(", "),comida:d.lunch&&d.lunch.name||"",cena:d.dinner&&d.dinner.name||"",aviso:clean(n&&n.text),descongelar:(d.dinner&&d.dinner.items||[]).filter(x=>HA_PROTEINS.test(String(x).toLowerCase()))}}));const n=new Date();return JSON.stringify({hoy:today,actualizado:`${today}T${pad(n.getHours())}:${pad(n.getMinutes())}`,dias})}
+function cloudSnapshotState(){return{weeks:getWeeks(),school:getSchool(),checks:getChecks(),favorites:getFavs(),rules:getRules(),restrictions:getRestrictions(),ratings:getRatings(),haJson:buildHaSummary(),updatedAt:new Date().toISOString()}}
+function scheduleCloudSave(){if(!cloudReady||applyingRemote||!FAMILY)return;clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(()=>{setSyncStatus("☁️ Guardando…");const st=cloudSnapshotState(),writes=[stateRef().set(st)];if(FAMILY.haToken)writes.push(db.collection("ha").doc(FAMILY.haToken).set({familyId:FAMILY.id,haJson:st.haJson,updatedAt:st.updatedAt}));Promise.all(writes).then(()=>setSyncStatus("✅ Sincronizado")).catch(e=>{console.error(e);setSyncStatus("⚠️ Sin conexión a la nube")})},700)}
+let unsubState=null;function startCloudSync(){if(unsubState)unsubState();unsubState=stateRef().onSnapshot(snap=>{if(!snap.exists){setSyncStatus("☁️ Subiendo datos iniciales…");scheduleCloudSave();return}const data=snap.data();applyingRemote=true;if(data.weeks)localStorage.setItem(K.weeks,JSON.stringify(data.weeks));if(data.school!==undefined)localStorage.setItem(K.school,JSON.stringify(data.school));if(data.checks)localStorage.setItem(K.checks,JSON.stringify(data.checks));if(data.favorites)localStorage.setItem(K.favorites,JSON.stringify(data.favorites));if(data.rules)localStorage.setItem(K.rules,JSON.stringify(data.rules));if(data.restrictions)localStorage.setItem(K.restrictions,JSON.stringify(data.restrictions));if(data.ratings)localStorage.setItem(K.ratings,JSON.stringify(data.ratings));applyingRemote=false;setSyncStatus("✅ Sincronizado");render();if(!String(data.haJson||"").includes(`"hoy":"${key(new Date())}"`))scheduleCloudSave()},err=>{console.error(err);setSyncStatus("⚠️ Sin conexión a la nube")})}
+
+/* ===== v5 beta: Google login, familias, invitaciones y sugerencias ===== */
+const APP_VERSION="5.0.0-beta";
+let FAMILY=null,USER=null;
+const KEY_NAMES=["current","weeks","school","checks","favorites","rules","restrictions","ratings"];
+function useFamilyKeys(fid){KEY_NAMES.forEach(n=>K[n]=`cf_${fid}_${n}`)}
+function stateRef(){return db.collection("families").doc(FAMILY.id).collection("data").doc("state")}
+const $id=i=>document.getElementById(i);
+function randCode(n){const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",b=crypto.getRandomValues(new Uint8Array(n));return Array.from(b,x=>a[x%a.length]).join("")}
+function gate(view){const g=$id("gate");if(!view){g.classList.add("hidden");document.body.classList.remove("gated");return}g.classList.remove("hidden");document.body.classList.add("gated");["gateLoading","gateLogin","gateFamily"].forEach(id=>$id(id).classList.toggle("hidden",id!=="gate"+cap(view)))}
+function gateMsg(t,isErr){const el=$id("gateMsg");el.textContent=t||"";el.classList.toggle("err",!!isErr)}
+function errText(e){const c=e&&e.code||"";if(c.includes("permission-denied"))return"No tienes permiso para esa familia.";if(c.includes("unavailable")||c.includes("network"))return"Sin conexión. Prueba de nuevo.";return(e&&e.message)||String(e)}
+async function signIn(){gateMsg("");const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});try{await firebase.auth().signInWithPopup(p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/cancelled-popup-request"].includes(e.code)){try{await firebase.auth().signInWithRedirect(p)}catch(e2){gateMsg("No se pudo entrar: "+errText(e2),true)}}else if(e.code!=="auth/popup-closed-by-user")gateMsg("No se pudo entrar: "+errText(e),true)}}
+function memberDoc(code){return{name:USER.displayName||"",email:USER.email||"",code,joinedAt:firebase.firestore.FieldValue.serverTimestamp()}}
+function userDoc(fid){return{familyId:fid,email:USER.email||"",name:USER.displayName||""}}
+async function onUser(user){USER=user;if(unsubState){unsubState();unsubState=null}FAMILY=null;if(!user){gate("login");return}gate("loading");gateMsg("");try{const u=await db.collection("users").doc(user.uid).get(),fid=u.exists&&u.data().familyId;if(fid){const f=await db.collection("families").doc(fid).get();if(f.exists){openFamily({id:fid,...f.data()});return}}}catch(e){console.error(e)}$id("gateHello").textContent=`Hola, ${String(user.displayName||user.email||"").split(" ")[0]}.`;gate("family")}
+function openFamily(f){FAMILY=f;useFamilyKeys(f.id);currentWeekStart=parseDate(localStorage.getItem(K.current))||monday(new Date());gate(null);renderFamilyPanel();render();startCloudSync()}
+async function importOld(fid){const s=await db.collection("familia").doc("estado").get();if(!s.exists)return;const d=s.data();delete d.haJson;d.updatedAt=new Date().toISOString();d.importedFrom="familia/estado";await db.collection("families").doc(fid).collection("data").doc("state").set(d)}
+async function createFamily(){const name=$id("familyNameInput").value.trim();if(!name){gateMsg("Ponle un nombre a tu familia.",true);return}const btn=$id("createFamilyBtn");btn.disabled=true;gateMsg("Creando tu familia…");const uid=USER.uid,ref=db.collection("families").doc(),code=randCode(6),haToken=randCode(24);try{await ref.set({name,joinCode:code,haToken,ownerUid:uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()});await ref.collection("members").doc(uid).set(memberDoc(""));await db.collection("joinCodes").doc(code).set({familyId:ref.id});if($id("importOldChk").checked){gateMsg("Importando tus datos…");await importOld(ref.id)}await db.collection("users").doc(uid).set(userDoc(ref.id));gateMsg("");openFamily({id:ref.id,name,joinCode:code,haToken,ownerUid:uid})}catch(e){console.error(e);gateMsg("No se pudo crear: "+errText(e),true)}finally{btn.disabled=false}}
+async function joinFamily(){const code=$id("joinCodeInput").value.toUpperCase().replace(/[^A-Z0-9]/g,"");if(code.length!==6){gateMsg("El código tiene 6 caracteres.",true);return}const btn=$id("joinFamilyBtn");btn.disabled=true;gateMsg("Buscando la familia…");try{const c=await db.collection("joinCodes").doc(code).get();if(!c.exists){gateMsg("Ese código no existe. Revísalo con quien te lo pasó.",true);return}const fid=c.data().familyId;await db.collection("families").doc(fid).collection("members").doc(USER.uid).set(memberDoc(code));await db.collection("users").doc(USER.uid).set(userDoc(fid));const f=await db.collection("families").doc(fid).get();gateMsg("");openFamily({id:fid,...f.data()})}catch(e){console.error(e);gateMsg("No se pudo unir: "+errText(e),true)}finally{btn.disabled=false}}
+function appUrl(){return location.origin+location.pathname}
+function haUrl(){return`https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/ha/${FAMILY.haToken}`}
+async function shareOrCopy(text,btn,done){try{if(navigator.share){await navigator.share({text});return}await navigator.clipboard.writeText(text);const t=btn.textContent;btn.textContent=done;setTimeout(()=>btn.textContent=t,1800)}catch(e){if(e&&e.name==="AbortError")return;prompt("Copia este texto:",text)}}
+function renderFamilyPanel(){if(!FAMILY)return;$id("famName").textContent=FAMILY.name||"Mi familia";$id("famCode").textContent=FAMILY.joinCode||"—";$id("haUrl").textContent=FAMILY.haToken?haUrl():"—";$id("whoami").textContent=USER?(USER.email||USER.displayName||""):"";$id("famMembers").textContent="…";db.collection("families").doc(FAMILY.id).collection("members").get().then(qs=>{$id("famMembers").textContent=qs.docs.map(d=>{const m=d.data();return String(m.name||m.email||"?").split(" ")[0]}).join(", ")||"—"}).catch(()=>{$id("famMembers").textContent="—"})}
+function openFeedback(){$id("fbStatus").textContent="";$id("fbText").value="";$id("feedbackDialog").showModal()}
+async function sendFeedback(){const text=$id("fbText").value.trim();if(!text){$id("fbStatus").textContent="Escribe algo antes de enviar.";return}if(!USER){$id("fbStatus").textContent="Tienes que haber entrado con Google.";return}const btn=$id("fbSendBtn");btn.disabled=true;$id("fbStatus").textContent="Enviando…";const tab=document.querySelector(".tab.active");try{await db.collection("feedback").add({uid:USER.uid,email:USER.email||"",name:USER.displayName||"",familyId:FAMILY&&FAMILY.id||"",familyName:FAMILY&&FAMILY.name||"",type:$id("fbType").value,text:text.slice(0,4000),tab:tab?tab.dataset.tab:"",week:key(currentWeekStart),version:APP_VERSION,ua:navigator.userAgent.slice(0,300),createdAt:firebase.firestore.FieldValue.serverTimestamp()});$id("fbStatus").textContent="¡Gracias! Recibido.";setTimeout(()=>$id("feedbackDialog").close(),900)}catch(e){console.error(e);$id("fbStatus").textContent="No se pudo enviar: "+errText(e)}finally{btn.disabled=false}}
+function boot(){try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();if(location.hostname==="localhost"&&/[?&]emu=1/.test(location.search)){db.useEmulator("localhost",8080);firebase.auth().useEmulator("http://localhost:9099")}cloudReady=true}catch(e){console.error(e);gate("login");gateMsg("No se pudo conectar con la nube.",true);return}if(/[?&]importar=1/.test(location.search))$id("importOldRow").classList.remove("hidden");$id("googleBtn").onclick=signIn;$id("createFamilyBtn").onclick=createFamily;$id("joinFamilyBtn").onclick=joinFamily;$id("joinCodeInput").onkeydown=e=>{if(e.key==="Enter")joinFamily()};$id("familyNameInput").onkeydown=e=>{if(e.key==="Enter")createFamily()};const out=()=>firebase.auth().signOut();$id("gateLogoutBtn").onclick=out;$id("logoutBtn").onclick=()=>{if(confirm("¿Cerrar sesión en este dispositivo?"))out()};$id("copyCodeBtn").onclick=e=>shareOrCopy(`Te invito a probar Comidas Familia 🍲\n1) Abre ${appUrl()}\n2) Entra con tu cuenta de Google\n3) Pulsa «Unirme» y escribe el código ${FAMILY.joinCode}`,e.currentTarget,"¡Copiada!");$id("copyHaBtn").onclick=e=>shareOrCopy(haUrl(),e.currentTarget,"¡Copiada!");$id("feedbackBtn").onclick=openFeedback;$id("fbCancelBtn").onclick=()=>$id("feedbackDialog").close();$id("fbSendBtn").onclick=sendFeedback;firebase.auth().getRedirectResult().catch(e=>gateMsg("No se pudo entrar: "+errText(e),true));firebase.auth().onAuthStateChanged(onUser)}
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+function clusterVals(vals,tol){const sorted=[...new Set(vals)].sort((a,b)=>a-b),out=[];sorted.forEach(v=>{if(out.length&&Math.abs(v-out[out.length-1])<tol)return;out.push(v)});return out}
+/* School menu calendar-grid parser (v4.7). Pure function: input is the text items of each PDF page
+   in pdf.js getTextContent() shape; output {days:{dayNum:[dish,...]}, holidays:[dayNum], rawText}. */
+const SCHOOL_EN_WORDS=new Set("with and in of the bread fruit salad soup cream rice chicken egg eggs fish meat potato potatoes vegetable vegetables homemade baked stewed mixed whole wheat grain oil sauce beans bean lentils chickpeas hake mackerel salmon pork lean turkey sausages sausage fries french crunchy mashed omelette tuna yogurt yoghurt cabbage cabagge carrots carrot pumpkin broccoli star green black white boiled floured rosemary sauteed sautéed seasoned seazoned terrorific gratin vegan cheese beef lasagna bolognese garlic onion spinach peas noodles macaroni pasta tomato tomatoes spaguettis spaghetti meatballs roast roasted fried grilled breaded stew noodle cod sole squid pie cake custard milk dessert juice beef ham pizza orange apple banana croutons au".split(" "));
+const SCHOOL_ES_WORDS=new Set("con de del al a la las los y en pan fruta ensalada sopa crema arroz pollo huevo huevos pescado carne patata patatas verduras verdura casera casero horno estofada estofadas estofado variada integral integrales aceite salsa alubias lentejas garbanzos merluza caballa salmón cerdo magro pavo salchichas fritas puré tortilla atún yogur repollo zanahoria calabaza brócoli gratén estrellitas judías verdes cocido ajo rehogado rehogada salteadas salteado temporada bilbaína andaluza gallineta lomitos tomate aliñado orégano jardinera francesa pintas blancas chorizo espaguettis espaguetis macarrones lasaña boloñesa queso mixta hortelana guiso vegetal completo cubana terrorífica crujientes romero pico gallo cebolla filete albóndigas croquetas guisantes acelgas coliflor espinacas fideos plancha rebozado rebozada asado asada empanado ternera lomo bacalao calamares natural verduritas".split(" "));
+function schoolLang(text){
+  const words=text.toLowerCase().replace(/[^a-záéíóúüñ\s]/g," ").split(/\s+/).filter(Boolean);
+  let es=0,en=0;
+  if(/[áéíóúñ]/i.test(text))es+=2;
+  words.forEach(w=>{if(SCHOOL_ES_WORDS.has(w))es++;if(SCHOOL_EN_WORDS.has(w))en++});
+  return es>en?"es":en>es?"en":"?";
+}
+function schoolCleanDish(s){
+  return s.replace(/\s+/g," ")
+    .replace(/(\s|^)\d{1,2}T?(-\d{1,2}T?)*\s*$/,"")        // trailing allergen codes 1-3T-6T
+    .replace(/\b([A-ZÁÉÍÓÚÑ]{4,})\b/g,w=>w.charAt(0)+w.slice(1).toLowerCase()) // INTEGRAL -> Integral
+    .trim();
+}
+function schoolIsDessert(x){return/\by pan( integral| blanco)?$/i.test(x)||/^(pan|fruta|postre|l[aá]cteo|yogur\w*)( natural| de temporada| integral)?$/i.test(x)}
+/* Cleans school text saved by older versions ("Lentejas + Stewed Lentils 1T + ..."): Spanish dishes only */
+function cleanSchoolText(t){const raw=String(t||"").trim();if(!raw.includes("+"))return raw;const out=[];let prev=null;raw.split(/\s*\+\s*/).forEach(part=>{const c=schoolCleanDish(part);if(!c||/^[\d\sT\-]+$/.test(c)||/kcal|^al[eé]rgenos$|^\d{1,2}-[a-záéíóú]/i.test(c))return;let lang=schoolLang(c);if(lang==="?")lang=prev==="es"?"en":"es";if(lang==="en"){prev="en";return}if(prev==="es"&&out.length&&(/^[a-záéíóúñ]/.test(c)||/\b(de|con|y|a|al|en|la|del)$/i.test(out[out.length-1])))out[out.length-1]+=" "+c;else out.push(c);prev="es"});const main=out.filter(x=>!schoolIsDessert(x));return(main.length?main:out).join(" + ")||raw}
+function parseSchoolGridPages(pages){
+  const days={},holidays=new Set();let rawText="";
+  const median=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0};
+  const cluster=(vals,tol)=>{const s=[...vals].sort((a,b)=>a-b),out=[];s.forEach(v=>{const last=out[out.length-1];if(last&&v-last.max<tol){last.vals.push(v);last.max=v}else out.push({vals:[v],max:v})});return out.map(c=>({v:median(c.vals),min:c.vals[0],max:c.max,n:c.vals.length}))};
+  pages.forEach(rawItems=>{
+    const items=rawItems.map(it=>{const t=it.transform||[1,0,0,1,0,0];const h=Math.hypot(t[2],t[3])||it.height||0;return{str:String(it.str||""),x0:t[4],x1:t[4]+(it.width||0),top:-t[5],h,angle:Math.atan2(t[1],t[0])}});
+    rawText+=items.map(i=>i.str).join(" ")+"\n";
+    const flat=items.filter(i=>Math.abs(i.angle)<0.15&&i.str.trim());
+    // 1) Date badges: bare numbers 1..31 in the biggest font used by bare numbers (allergen codes are smaller)
+    const nums=flat.filter(i=>/^\d{1,2}$/.test(i.str.trim())&&+i.str.trim()>=1&&+i.str.trim()<=31);
+    if(nums.length<3)return;
+    const maxH=Math.max(...nums.map(n=>n.h));
+    let badges=nums.filter(n=>n.h>=maxH*0.85);
+    // 2) Columns = clusters of badge x positions
+    const cols=cluster(badges.map(b=>b.x0),25).map(c=>c.v);
+    if(cols.length<3)return;
+    const colGap=median(cols.slice(1).map((c,i)=>c-cols[i]));
+    const colOf=x=>{if(x<cols[0]-colGap*0.15||x>cols[cols.length-1]+colGap*1.05)return-1;let ci=0;cols.forEach((c,i)=>{if(x>=c-colGap*0.15)ci=i});return ci};
+    // 3) Rows = clusters of badge tops. A row may hold just 1-2 days (month start/end).
+    const rowC=cluster(badges.map(b=>b.top),maxH*1.2);
+    if(rowC.length<2&&badges.length<4)return;
+    const rows=rowC.map(r=>r.v);
+    const rowGap=rows.length>1?median(rows.slice(1).map((r,i)=>r-rows[i])):colGap;
+    const lead=maxH*1.5; // dish text can start slightly above the badge baseline
+    const rowOf=top=>{if(top<rows[0]-lead||top>rows[rows.length-1]+rowGap-lead)return-1;let ri=0;rows.forEach((r,i)=>{if(top>=r-lead)ri=i});return ri};
+    const cellDate={};
+    badges.forEach(b=>{const r=rowOf(b.top),c=colOf(b.x0);if(r>=0&&c>=0)cellDate[r+"_"+c]=+b.str.trim()});
+    const badgeSet=new Set(badges);
+    // 4) Assign every other text fragment to its cell
+    const cells={};
+    flat.forEach(i=>{
+      if(badgeSet.has(i))return;
+      const r=rowOf(i.top),c=colOf(i.x0);if(r<0||c<0)return;
+      const d=cellDate[r+"_"+c];if(!d)return;
+      (cells[d]=cells[d]||[]).push(i);
+    });
+    // 5) Inside each cell: rebuild lines, drop noise, keep Spanish dish names
+    Object.entries(cells).forEach(([d,frags])=>{
+      frags.sort((a,b)=>a.top-b.top||a.x0-b.x0);
+      const lines=[];
+      frags.forEach(f=>{const last=lines[lines.length-1];if(last&&Math.abs(f.top-last.top)<=Math.max(2,f.h*0.35)&&f.h>=last.h*0.8)last.parts.push(f);else if(last&&f.h<last.h*0.8&&Math.abs(f.top-last.top)<=last.h*0.6)last.parts.push(f);else lines.push({top:f.top,h:f.h,parts:[f]})});
+      const texts=lines.map(l=>l.parts.sort((a,b)=>a.x0-b.x0).map(p=>p.str).join(" ").replace(/\s+/g," ").trim()).filter(Boolean);
+      if(texts.some(t=>/festivo|holiday|no lectivo|vacaciones/i.test(t))){holidays.add(+d);return}
+      const dishes=[];let prev=null;
+      texts.forEach(t=>{
+        if(/kcal|\blip:|\bprot:|\bhc:/i.test(t))return;
+        if(/^(lunes|martes|mi[eé]rcoles|jueves|viernes)\b/i.test(t))return;
+        const clean=schoolCleanDish(t);
+        if(!clean||/^[\d\sT\-]+$/.test(clean)){return}
+        let lang=schoolLang(clean);
+        if(lang==="?")lang=prev==="es"?"en":"es";
+        if(lang==="en"){prev="en";return}
+        const startsLower=/^[a-záéíóúñ]/.test(clean);
+        if(prev==="es"&&dishes.length&&(startsLower||/\b(de|con|y|a|al|en|la|del|las|los)$/i.test(dishes[dishes.length-1])))dishes[dishes.length-1]+=" "+clean;
+        else dishes.push(clean);
+        prev="es";
+      });
+      // dessert/bread line ("Fruta y Pan", "Yogur Natural y Pan Integral") adds nothing to dinner planning
+      const main=dishes.filter(x=>!schoolIsDessert(x));
+      if(main.length)days[d]=main;
+    });
+  });
+  return{days,holidays:[...holidays].sort((a,b)=>a-b),rawText};
+}
+const PDF_W={R:[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,761,556,556,222,556,333,1000,556,556,333,1000,667,333,1000,556,611,556,556,222,222,333,333,350,556,1000,333,1000,500,333,944,556,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500],B:[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,761,556,611,278,556,500,1000,556,556,333,1000,667,333,1000,611,611,611,611,278,278,500,500,350,556,1000,333,1000,556,333,944,611,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556]};
+/* Tiny PDF writer for the weekly menu: A4 landscape, Helvetica (WinAnsi), no external libraries. */
+const PDF_CP={"€":128,"‚":130,"ƒ":131,"„":132,"…":133,"†":134,"‡":135,"ˆ":136,"‰":137,"Š":138,"‹":139,"Œ":140,"Ž":142,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"˜":152,"™":153,"š":154,"›":155,"œ":156,"ž":158,"Ÿ":159};
+function pdfWin(s){let o="";for(const ch of String(s||"")){const c=ch.codePointAt(0);if(c>=32&&c<127||c>=160&&c<=255)o+=String.fromCharCode(c);else if(PDF_CP[ch])o+=String.fromCharCode(PDF_CP[ch]);else if(ch===" "||ch==="\t")o+=" "}return o.replace(/\s+/g," ").trim()}
+function pdfTextW(s,bold,size){const t=bold?PDF_W.B:PDF_W.R;let w=0;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);w+=t[c-32]||556}return w*size/1000}
+function pdfWrap(s,bold,size,maxW){const words=pdfWin(s).split(" ").filter(Boolean),lines=[];let cur="";words.forEach(w=>{const t=cur?cur+" "+w:w;if(pdfTextW(t,bold,size)<=maxW||!cur)cur=t;else{lines.push(cur);cur=w}});if(cur)lines.push(cur);return lines}
+function pdfEsc(s){return s.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}
+function pdfRGB(hex){const n=parseInt(hex.slice(1),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255].map(v=>v.toFixed(3)).join(" ")}
+function schoolCellFor(d,school){const hasDates=!!(school&&school.parsedByDate&&Object.keys(school.parsedByDate).length),live=hasDates?school.parsedByDate[d.date]:null,raw=hasDates?(live||""):(d.school||""),text=cleanSchoolText(raw),valid=text&&!/^men[uú] (no cargado|escolar cargado)/i.test(text)&&!/^festivo$/i.test(text),dishes=valid?text.split(/\s*\+\s*/):[],dt=parseDate(d.date),sameMonth=hasDates&&school.month&&MONTHS[dt.getMonth()]===school.month&&Number(school.year)===dt.getFullYear();return{live:!!live||!hasDates&&valid,text:dishes.length?text:/festivo/i.test(raw)?"Festivo, sin cole":hasDates&&!sameMonth?`Falta el menú del cole de ${MONTHS[dt.getMonth()]}`:"Sin menú del cole para este día",dishes,tags:tagsFromText(dishes.join(" + "))}}
+function buildWeekPdf(week,schoolLabel){
+  const W=842,H=595,M=28,gap=8,cols=5,colW=(W-2*M-gap*(cols-1))/cols,pad=8,inner=colW-2*pad;
+  const ops=[],C={ink:"#1F2A1E",soft:"#5C6659",line:"#D9DCCF",sky:"#2C6A9E",skyT:"#E7F0F7",olive:"#5E7424",yolk:"#F2C230",ok:"#2F6B2F",warn:"#8A5A00",plum:"#5A2D5C"};
+  const text=(x,y,s,size,bold,color)=>ops.push(`BT /${bold?"F2":"F1"} ${size} Tf ${pdfRGB(color)} rg ${x.toFixed(2)} ${y.toFixed(2)} Td (${pdfEsc(s)}) Tj ET`);
+  const rect=(x,y,w,h,fill,stroke,lw=0.8)=>ops.push(`q ${fill?pdfRGB(fill)+" rg ":""}${stroke?pdfRGB(stroke)+" RG "+lw+" w ":""}${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${fill&&stroke?"B":fill?"f":"S"} Q`);
+  // header
+  text(M,H-M-14,"Comidas Familia",16,true,C.ink);
+  text(M,H-M-30,pdfWin("Semana del "+week.range),11,false,C.soft);
+  if(schoolLabel){const s=pdfWin("Cole: "+schoolLabel);text(W-M-pdfTextW(s,true,9),H-M-14,s,9,true,C.sky)}
+  const top=H-M-46,todayKey=key(new Date()),school=getSchool(),bottom=M+6;
+  const layout=k=>{const cols=[];week.days.forEach((d,i)=>{
+    const x=M+i*(colW+gap),body=[],y=top-pad,f=v=>v*k;
+    const dt=parseDate(d.date),num=String(dt.getDate()),isToday=d.date===todayKey,numW=pdfTextW(num,true,f(22));
+    body.push(()=>{if(isToday)rect(x+pad-3,y-f(25),numW+6,f(26),C.yolk,null);text(x+pad,y-f(20),num,f(22),true,C.ink)});
+    const nx=x+pad+numW+6;
+    body.push(()=>{text(nx,y-f(10),pdfWin(d.day),f(11),true,C.ink);text(nx,y-f(20),pdfWin(MONTHS[dt.getMonth()]),f(8.5),false,C.soft)});
+    const sc=schoolCellFor(d,school),cole=sc.text,dishes=sc.dishes;
+    const coleLines=dishes.length?dishes.map(dd=>pdfWrap(dd,false,f(8.5),inner-12)):[pdfWrap(cole,false,f(8.5),inner-12)];
+    const lh=f(10.5),boxH=f(14)+coleLines.reduce((a,l)=>a+l.length*lh+2,0)+4,boxTop=y-f(30)-6;
+    body.push(()=>{rect(x+pad,boxTop-boxH,inner,boxH,dishes.length?C.skyT:null,dishes.length?null:C.line);text(x+pad+6,boxTop-f(11),"En el cole",f(7.5),true,C.sky);let ly=boxTop-f(11)-lh;coleLines.forEach(ls=>{ls.forEach(l=>{text(x+pad+6,ly,l,f(8.5),false,dishes.length?C.ink:C.soft);ly-=lh});ly-=2})});
+    let cy=boxTop-boxH-10;
+    const notes=sc.live?note(sc.tags,d.dinner):d.note,ml=f(12.5);
+    [["Comida","adultos",d.lunch],["Cena","familia",d.dinner]].forEach(([lab,who,m])=>{
+      const yy=cy,lines=m&&(m.parts||[]).length>1?m.parts.flatMap((pt,q)=>pdfWrap(`${q+1}º ${pt.name}`,true,f(10.5),inner)):pdfWrap(m&&m.name||"",true,f(10.5),inner);
+      body.push(()=>{ops.push(`q ${pdfRGB(C.line)} RG 0.6 w ${x+pad} ${yy+4} m ${x+pad+inner} ${yy+4} l S Q`);text(x+pad,yy-f(6),lab,f(8),true,C.olive);text(x+pad+pdfTextW(lab,true,f(8))+4,yy-f(6),who,f(8),false,C.soft);lines.forEach((l,q)=>text(x+pad,yy-f(19)-q*ml,l,f(10.5),true,C.ink))});
+      cy=yy-f(19)-(lines.length-1)*ml-f(14);
+    });
+    const nl=pdfWrap(notes&&notes.text||"",false,f(7.5),inner-8),ny=cy,nh=f(9.5);
+    if(nl.length){body.push(()=>{rect(x+pad,ny-nl.length*nh-6,inner,nl.length*nh+8,notes.class==="warn"?"#FFF3D6":"#E9F4E6",null);nl.forEach((l,q)=>text(x+pad+4,ny-f(6)-q*nh,l,f(7.5),false,notes.class==="warn"?C.warn:C.ok))});cy=ny-nl.length*nh-10}
+    cols.push({x,isToday,body,h:top-cy+2})});return cols};
+  // biggest text size whose tallest column still fits on the page
+  let k=1.7,laid=layout(k);while(k>0.8&&Math.max(...laid.map(c=>c.h))>top-bottom){k-=0.05;laid=layout(k)}
+  const colH=Math.max(...laid.map(c=>c.h));
+  laid.forEach(c=>{rect(c.x,top-colH,colW,colH,"#FFFFFF",c.isToday?C.yolk:C.line,c.isToday?2:0.8);c.body.forEach(fn=>fn())});
+  text(M,M-10,pdfWin("Generado el "+new Date().toLocaleDateString("es-ES")),7,false,C.soft);
+  // assemble
+  const content=ops.join("\n"),objs=[];
+  objs.push("<< /Type /Catalog /Pages 2 0 R >>");
+  objs.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  objs.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>`);
+  objs.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+  objs.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+  objs.push(`<< /Title (${pdfEsc(pdfWin("Menú semana "+week.range))}) /Producer (Comidas Familia) >>`);
+  let pdf="%PDF-1.4\n%\xe2\xe3\xcf\xd3\n";const off=[];
+  objs.forEach((o,i)=>{off.push(pdf.length);pdf+=`${i+1} 0 obj\n${o}\nendobj\n`});
+  const xref=pdf.length;
+  pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+off.map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("");
+  pdf+=`trailer\n<< /Size ${objs.length+1} /Root 1 0 R /Info ${objs.length} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes=new Uint8Array(pdf.length);for(let i=0;i<pdf.length;i++)bytes[i]=pdf.charCodeAt(i)&255;return bytes;
+}
+async function exportWeekPdf(){
+  const week=getWeeks()[key(currentWeekStart)];
+  if(!week){alert("Genera primero la semana para poder exportarla.");return}
+  const school=getSchool(),bytes=buildWeekPdf(week,school?`${cap(school.month)} ${school.year}`:""),name=`menu-semana-${week.id}.pdf`,blob=new Blob([bytes],{type:"application/pdf"});
+  const touch=window.matchMedia&&matchMedia("(pointer:coarse)").matches;
+  if(touch&&navigator.canShare){try{const file=new File([blob],name,{type:"application/pdf"});if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Menú semana "+week.range});return}}catch(e){if(e&&e.name==="AbortError")return}}
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+async function extractSchoolGrid(file){const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf}).promise;const pages=[];for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p);pages.push((await page.getTextContent()).items)}const r=parseSchoolGridPages(pages);const nums=Object.keys(r.days).map(Number);if(nums.length<3)return null;const det=detectSchoolMonthYear(r.rawText);const all=[...new Set([...nums,...r.holidays])].sort((a,b)=>a-b);let out=`Menú ${cap(det.month)} ${det.year}\n\n`;all.forEach(d=>{out+=`${d}: ${r.days[d]?r.days[d].join(" + "):"Festivo"}\n`});return{text:out.trim(),days:nums.length,holidays:r.holidays,label:`${cap(det.month)} ${det.year}`}}
+async function extractPdfMenuGrid(file){const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf}).promise;const byDate={};let allRawText="";for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p);const content=await page.getTextContent();const items=content.items.map(it=>{const x0=it.transform[4],y=it.transform[5],angle=Math.atan2(it.transform[1],it.transform[0]);return{str:it.str,x0,x1:x0+(it.width||0),top:-y,angle}});allRawText+=items.map(i=>i.str).join(" ")+"\n";const gridItems=items.filter(i=>Math.abs(i.angle)<0.15&&i.str.trim());const badgeItems=gridItems.filter(i=>/^\d{1,2}$/.test(i.str.trim()));if(badgeItems.length<3)continue;let rowTops=clusterVals(badgeItems.map(i=>i.top),8);const colAnchors=clusterVals(badgeItems.map(i=>i.x0),30);const nearestCol=x=>{let bi=0,bd=Infinity;colAnchors.forEach((c,i)=>{const d=Math.abs(c-x);if(d<bd){bd=d;bi=i}});return bi};const nearestRowIdx=(top,tops)=>{let bi=0,bd=Infinity;tops.forEach((r,i)=>{const d=Math.abs(r-top);if(d<bd){bd=d;bi=i}});return bi};const rowColSets=rowTops.map(()=>new Set());badgeItems.forEach(b=>{const r=nearestRowIdx(b.top,rowTops);rowColSets[r].add(nearestCol(b.x0))});rowTops=rowTops.filter((rt,i)=>rowColSets[i].size>=3);if(!rowTops.length)continue;const kcalTops=clusterVals(gridItems.filter(i=>/^kcal/i.test(i.str.trim())).map(i=>i.top),8);const maxValidTop=(kcalTops.length?Math.max(...kcalTops):Math.max(...rowTops))+40;const minValidTop=Math.min(...rowTops)-40;const rowOf=top=>{if(top<minValidTop||top>maxValidTop)return-1;for(let i=0;i<rowTops.length;i++){const lo=rowTops[i]-5,hi=i<kcalTops.length?kcalTops[i]+4:Infinity;if(top>=lo&&top<=hi)return i}let bi=0,bd=Infinity;rowTops.forEach((r,i)=>{const d=Math.abs(r-top);if(d<bd){bd=d;bi=i}});return bi};const strictRowOf=top=>{let bi=-1,bd=Infinity;rowTops.forEach((r,i)=>{const d=Math.abs(r-top);if(d<bd){bd=d;bi=i}});return bd<15?bi:-1};const gridDates={};badgeItems.forEach(b=>{const r=strictRowOf(b.top);if(r<0)return;gridDates[`${r}_${nearestCol(b.x0)}`]=parseInt(b.str.trim(),10)});const lineMap={};gridItems.forEach(i=>{const key=Math.round(i.top);(lineMap[key]=lineMap[key]||[]).push(i)});Object.keys(lineMap).forEach(key=>{const ws=lineMap[key].slice().sort((a,b)=>a.x0-b.x0);const segments=[[ws[0]]];for(let k=1;k<ws.length;k++){const prev=ws[k-1],cur=ws[k];if(cur.x0-prev.x1>15)segments.push([cur]);else segments[segments.length-1].push(cur)}const top=Number(key);const r=rowOf(top);if(r<0)return;segments.forEach(seg=>{const text=seg.map(s=>s.str).join(" ").trim();if(!text||/^\d{1,2}$/.test(text))return;if(/^kcal/i.test(text))return;if(/^(Lunes|Martes|Mi[ée]rcoles|Jueves|Viernes)[- ]/i.test(text))return;const c=nearestCol(seg[0].x0);const dateNum=gridDates[`${r}_${c}`];if(!dateNum)return;(byDate[dateNum]=byDate[dateNum]||[]).push(text)})})}const days=Object.keys(byDate).map(Number).sort((a,b)=>a-b);if(!days.length)return null;const detected=detectSchoolMonthYear(allRawText);let out=`Menú ${cap(detected.month)} ${detected.year}\n\n`;days.forEach(d=>{out+=`${d}: ${byDate[d].join(" + ")}\n`});return out.trim()}
+async function extractPdfText(file){const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf}).promise;let text="";for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p);const content=await page.getTextContent();let lastY=null,line="";const lines=[];content.items.forEach(item=>{const y=item.transform[5];if(lastY!==null&&Math.abs(y-lastY)>2){if(line.trim())lines.push(line.trim());line=""}line+=item.str+" ";lastY=y});if(line.trim())lines.push(line.trim());text+=lines.join("\n")+"\n"}return text.trim()}
+function esc(s){return String(s||"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}function persist(){localStorage.setItem(K.current,key(currentWeekStart))}function dishId(d){return(d?.name||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)}
+function detectSchoolMonthYear(text){const lower=text.toLowerCase(),y=((lower.match(new RegExp("\\b(?:"+MONTHS.join("|")+")\\b\\s*(?:de\\s*)?(20\\d{2})"))||[])[1])||(lower.match(/20\d{2}/)||[])[0],year=y?Number(y):new Date().getFullYear(),near=lower.match(new RegExp("\\b("+MONTHS.join("|")+")\\b\\s*(?:de\\s*)?20\\d{2}")),mi=near?MONTHS.indexOf(near[1]):MONTHS.findIndex(m=>new RegExp("\\b"+m+"\\b").test(lower));if(mi>=0)return{month:MONTHS[mi],monthIndex:mi,year};return{month:MONTHS[currentWeekStart.getMonth()],monthIndex:currentWeekStart.getMonth(),year:currentWeekStart.getFullYear()}}
+function tagsFromText(t){const s=(t||"").toLowerCase(),tags=[];if(/pasta|macarr|espagu|lasañ|canel|codito|tallar|fideo|ñoqui|pomodoro|estrellitas/.test(s))tags.push("pasta");if(/arroz|paella/.test(s))tags.push("arroz");if(/lentej|garbanz|judías? pintas|alubia|cocido|chili/.test(s))tags.push("legumbre");if(/merluza|pescad|salmón|salmon|atun|atún|caballa|bacalao|palometa|gallineta|abadejo|rape|lenguado|calamar|sepia|gamba|marisco|sardina|boquer|lubina|dorada|bonito|paella mixta/.test(s))tags.push("pescado");if(/(^|[^a-z])pollo|ternera|cerdo|pavo|carne|escalope|boloñ|albóndiga|albondiga|chorizo|salchich|magro|lomo|jamón|jamon|hamburgues|cordero|conejo|filete ruso|pepitoria|cocido completo|sopa de cocido/.test(s))tags.push("carne");if(/huevo|revuelto/.test(s)||/tortilla(?! vegana)/.test(s))tags.push("huevo");return[...new Set(tags)]}
+function parseSchoolLines(text,detected){const raw=text.split(/\n+/).map(x=>x.trim()).filter(x=>x&&x.length<600),parsedDays={},parsedByDate={};raw.forEach(line=>{const bareMatch=line.match(/^(\d{1,2})\s*[:\-]\s*(.+)$/);if(bareMatch){const dayNum=Number(bareMatch[1]),clean=bareMatch[2].trim(),y=detected?.year||currentWeekStart.getFullYear(),m=detected?.monthIndex;if(Number.isInteger(m)&&dayNum>0&&dayNum<=31){parsedByDate[`${y}-${pad(m+1)}-${pad(dayNum)}`]=clean;return}}const lower=line.toLowerCase(),idx=DAYS.findIndex(d=>lower.includes(d.toLowerCase()));if(idx<0)return;let clean=line.replace(new RegExp(DAYS[idx],"i"),"").replace(/^[:\-\s]+/,"").trim()||line;const dateMatch=clean.match(/^(\d{1,2})\s*[:\-]\s*(.+)$/);if(dateMatch){const dayNum=Number(dateMatch[1]);clean=dateMatch[2].trim();const y=detected?.year||currentWeekStart.getFullYear(),m=detected?.monthIndex; if(Number.isInteger(m)&&dayNum>0){parsedByDate[`${y}-${pad(m+1)}-${pad(dayNum)}`]=clean}}else if(!parsedDays[idx]){parsedDays[idx]=clean}if(!parsedDays[idx])parsedDays[idx]=clean});return{parsedDays,parsedByDate}}
+function schoolForIndex(school,i){if(!school)return{text:"menú no cargado",tags:[]};const dk=key(addDays(currentWeekStart,i));if(school.parsedByDate&&school.parsedByDate[dk]){const t=cleanSchoolText(school.parsedByDate[dk]);return{text:t,tags:tagsFromText(t)}}if(school.parsedDays&&school.parsedDays[i]){const t=cleanSchoolText(school.parsedDays[i]);return{text:t,tags:tagsFromText(t)}}const lines=school.text.split(/\n|\.|;/).map(l=>l.trim()).filter(l=>l.length>8&&l.length<160),text=lines[i]||"Menú escolar cargado";return{text,tags:tagsFromText(text)}}
+function usedDishIdsFromWeek(existing,skipIndex=null,type=null){const ids=new Set();(existing?.days||[]).forEach((d,i)=>["lunch","dinner"].forEach(t=>{if(skipIndex===i&&type===t)return;if(d?.[t]?.name)ids.add(dishId(d[t]))}));return ids}
+function getRatings(){try{return JSON.parse(localStorage.getItem(K.ratings)||"{}")}catch(e){return{}}}function setRatings(r){localStorage.setItem(K.ratings,JSON.stringify(r));scheduleCloudSave()}function ratingOf(d){return(getRatings()[dishId(d)]||{}).v||0}function setRating(dish,v){const r=getRatings(),id=dishId(dish);if(!id)return 0;if(r[id]&&r[id].v===v)delete r[id];else r[id]={name:dish.name,group:dish.group||"",items:dish.items||[],v,at:new Date().toISOString()};setRatings(r);return r[id]?v:0}
+function favArray(){return Object.values(getFavs()).filter(Boolean)}function weightedPool(basePool,usedIds){const banned=getRestrictions(),ok=d=>dishAllowed(d,banned)&&ratingOf(d)!==-1,base=basePool.filter(ok),liked=base.filter(d=>ratingOf(d)===1),extra=favArray().filter(f=>!usedIds.has(dishId(f))&&ok(f));return base.concat(liked,liked,extra,extra)}function pickFrom(candidates,usedIds){const clean=candidates.filter(x=>x&&x.name&&!usedIds.has(dishId(x)));if(clean.length)return{...clean[Math.floor(Math.random()*clean.length)]};return{...candidates[Math.floor(Math.random()*candidates.length)]}}
+function chooseAdultLunch(i,usedGroups,usedIds){const banned=getRestrictions();let pool=weightedPool(adultLunchPool,usedIds).filter(x=>x.group!=="pizza"&&!usedIds.has(dishId(x))),c=pool.filter(x=>!usedGroups.includes(x.group));if(!c.length)c=pool;if(!c.length)c=adultLunchPool.filter(x=>dishAllowed(x,banned)&&ratingOf(x)!==-1);if(!c.length)c=adultLunchPool.filter(x=>dishAllowed(x,banned));if(!c.length)c=adultLunchPool;return pickFrom(c,usedIds)}
+function chooseDinner(i,tags,usedIds){if(i===4){const pizza=dinnerPool.find(x=>x.group==="pizza");return{...pizza}}const banned=getRestrictions();let avoid=[];if(tags.includes("carne"))avoid.push("carne");if(tags.includes("pescado"))avoid.push("pescado");if(tags.includes("huevo"))avoid.push("huevo");let pool=weightedPool(dinnerPool,usedIds).filter(x=>x.group!=="pizza"&&!usedIds.has(dishId(x)));if(i===2)pool=pool.filter(x=>x.easy);let c=pool.filter(x=>!avoid.includes(x.group));if(!c.length)c=pool;if(!c.length)c=dinnerPool.filter(x=>x.group!=="pizza"&&dishAllowed(x,banned)&&ratingOf(x)!==-1);if(!c.length)c=dinnerPool.filter(x=>x.group!=="pizza"&&dishAllowed(x,banned));if(!c.length)c=dinnerPool.filter(x=>x.group!=="pizza");return pickFrom(c,usedIds)}
+function note(tags,dinner){if(!tags.length)return{class:"warn",text:"🏫 Sin menú del cole."};if(tags.includes("carne")&&dinner.group==="carne")return{class:"warn",text:"⚠️ Cole con carne: mejor pescado/huevo."};if(tags.includes("pescado")&&dinner.group==="pescado")return{class:"warn",text:"⚠️ Cole con pescado: mejor carne/huevo."};if((tags.includes("arroz")||tags.includes("pasta"))&&(dinner.group==="pasta"||dinner.group==="arroz"))return{class:"warn",text:"⚠️ Mucho hidrato en el día. Revisa si quieres algo más ligero."};return{class:"ok",text:"✅ Cena compensada con el cole."}}
+function ensureWeek(){if(!getWeeks()[key(currentWeekStart)])generateWeek()}
+function generateWeek(force=false){const school=getSchool(),weeks=getWeeks(),existing=weeks[key(currentWeekStart)],usedGroups=[],usedIds=new Set();(existing?.days||[]).forEach(d=>{if(d.lockedDay){if(d.lunch)usedIds.add(dishId(d.lunch));if(d.dinner)usedIds.add(dishId(d.dinner))}else{if(d.lockedLunch&&d.lunch)usedIds.add(dishId(d.lunch));if(d.lockedDinner&&d.dinner)usedIds.add(dishId(d.dinner))}});const days=DAYS.map((day,i)=>{const prev=existing?.days?.[i];if(!force&&prev?.lockedDay){if(prev.lunch)usedIds.add(dishId(prev.lunch));if(prev.dinner)usedIds.add(dishId(prev.dinner));return prev}const sf=schoolForIndex(school,i);let lunch=(!force&&prev?.lockedLunch)?prev.lunch:chooseAdultLunch(i,usedGroups,usedIds);usedIds.add(dishId(lunch));usedGroups.push(lunch.group);let dinner=(!force&&prev?.lockedDinner)?prev.dinner:chooseDinner(i,sf.tags,usedIds);usedIds.add(dishId(dinner));return{day,date:key(addDays(currentWeekStart,i)),school:sf.text,schoolTags:sf.tags,lunch,dinner,note:note(sf.tags,dinner),lockedDay:prev?.lockedDay||false,lockedLunch:prev?.lockedLunch||false,lockedDinner:prev?.lockedDinner||false}});weeks[key(currentWeekStart)]={id:key(currentWeekStart),range:fmtRange(currentWeekStart),createdAt:new Date().toISOString(),status:existing?.status||"",schoolPdf:school?`${cap(school.month)} ${school.year}`:"Sin menú escolar",days};setWeeks(weeks);render()}
+function retargetWeek(copy){const school=getSchool();copy.schoolPdf=school?`${cap(school.month)} ${school.year}`:"Sin menú escolar";if(!(school&&school.parsedByDate&&Object.keys(school.parsedByDate).length))return copy;copy.days=copy.days.map(d=>{const sc=schoolCellFor({...d,school:""},school),txt=sc.dishes.length?sc.dishes.join(" + "):"menú no cargado";return{...d,school:txt,schoolTags:sc.tags,note:note(sc.tags,d.dinner)}});return copy}
+function duplicateWeek(){const weeks=getWeeks(),src=weeks[key(currentWeekStart)];if(!src){generateWeek();return}const next=addDays(currentWeekStart,7),copy=JSON.parse(JSON.stringify(src));copy.id=key(next);copy.range=fmtRange(next);copy.createdAt=new Date().toISOString();copy.days=copy.days.map((d,i)=>({...d,date:key(addDays(next,i))}));retargetWeek(copy);weeks[copy.id]=copy;setWeeks(weeks);currentWeekStart=next;render()}function deleteWeek(){const weeks=getWeeks();delete weeks[key(currentWeekStart)];setWeeks(weeks);render()}
+function setMeal(i,type,dish){const weeks=getWeeks(),w=weeks[key(currentWeekStart)];if(!w)return;w.days.forEach((d,idx)=>{if(idx!==i&&d[type]&&dishId(d[type])===dishId(dish)&&!d[type+"Locked"]&&!d.lockedDay){d[type]=type==="dinner"?chooseDinner(idx,d.schoolTags||[],usedDishIdsFromWeek(w,idx,type)):chooseAdultLunch(idx,w.days.map(x=>x.lunch.group),usedDishIdsFromWeek(w,idx,type));if(type==="dinner")d.note=note(d.schoolTags||[],d.dinner)}});w.days[i][type]=dish;if(type==="dinner")w.days[i].note=note(w.days[i].schoolTags||[],dish);setWeeks(weeks);render()}
+function regenMeal(i,type){const weeks=getWeeks(),w=weeks[key(currentWeekStart)];if(!w)return;const d=w.days[i];if(d.lockedDay||(type==="lunch"&&d.lockedLunch)||(type==="dinner"&&d.lockedDinner))return;const used=usedDishIdsFromWeek(w,i,type);if(type==="lunch")d.lunch=chooseAdultLunch(i,w.days.map(x=>x.lunch.group),used);if(type==="dinner"){d.dinner=chooseDinner(i,d.schoolTags||[],used);d.note=note(d.schoolTags||[],d.dinner)}setWeeks(weeks);render()}
+function toggleFav(dish){const favs=getFavs(),id=dishId(dish);if(favs[id])delete favs[id];else favs[id]={...dish,id};setFavs(favs);render()}function isFav(dish){return!!getFavs()[dishId(dish)]}
+function buildShopping(week){const cats={"🥬 Verduras/fruta":{},"🥩 Proteínas":{},"🥖 Despensa":{},"❄️ Congelados":{},"🧺 Otros":{}};if(!week)return cats;const add=item=>{const l=item.toLowerCase();let cat="🧺 Otros";if(/tomate|aguacate|verdura|brócoli|brocoli|ensalada|calabacín|patata|zanahoria|gazpacho|espinacas|champiñones|setas|espárragos|maíz|judías verdes|calabaza/.test(l))cat="🥬 Verduras/fruta";else if(/pollo|salmón|salmon|huevo|merluza|pavo|queso|gulas|alitas|atún|atun|pescado|palometa|ternera|bacalao|gambas|marisco|jamón|chorizo|cerdo|carne|sardinas|boquerones|solomillo/.test(l))cat="🥩 Proteínas";else if(/arroz|pasta|pan|lentejas|tomate frito|ñoqui|garbanzos|alubias|fideos|espaguetis|tortitas de trigo|caldo/.test(l))cat="🥖 Despensa";else if(/pizza|rabas|nuggets|croquetas/.test(l))cat="❄️ Congelados";cats[cat][item]=(cats[cat][item]||0)+1};week.days.forEach(d=>[...(d.lunch.items||[]),...(d.dinner.items||[])].forEach(add));return cats}
+function render(){persist();renderHeader();renderWeek();renderSchool();renderHistory();renderShopping();renderFavorites();renderRatings();renderRules();renderRestrictions();renderManualOptions()}function renderHeader(){const school=getSchool();document.getElementById("heroSubtitle").textContent=fmtRange(currentWeekStart);document.getElementById("schoolBannerTitle").textContent=school?`🏫 Menú escolar cargado: ${cap(school.month)} ${school.year}`:"🏫 Falta el menú del cole";document.getElementById("schoolBannerText").textContent=school?"Las cenas se compensan con lo que comen en el cole.":"Sube el PDF del comedor en la pestaña Cole.";document.getElementById("statusBubble").textContent=getWeeks()[key(currentWeekStart)]?"Generado":"Pendiente"}
+function renderWeek(){const weeks=getWeeks(),week=weeks[key(currentWeekStart)],school=getSchool();document.getElementById("weekTitle").textContent=`Semana ${fmtRange(currentWeekStart)}`;document.getElementById("weekSubtitle").textContent=week?"Menú generado · lunes a viernes":"No hay menú generado para esta semana";const badge=document.getElementById("schoolBadge");badge.textContent=school?`Cole: ${cap(school.month)} ${school.year}`:"Sin menú escolar";badge.className="badge "+(school?"ok":"");const box=document.getElementById("weekMenu");if(!week){box.innerHTML=`<div class="panel muted">No existe menú para esta semana. Pulsa <strong>Generar semana</strong>.</div>`;return}const todayKey=key(new Date());box.innerHTML=week.days.map((d,i)=>{const dt=parseDate(d.date),isToday=d.date===todayKey,sc=schoolCellFor(d,school),cole=sc.text,liveNote=sc.live?note(sc.tags,d.dinner):d.note,coleLines=sc.dishes,tags=sc.tags,meal=(t,label,who,lk)=>`<div class="meal-row"><div class="meal-label">${label} <span class="who">${who}</span>${d[lk]?' <span aria-label="bloqueado">🔒</span>':''}</div>${(d[t].parts||[]).length>1?d[t].parts.map((pt,k)=>`<div class="part"><p class="meal"><span class="part-n">${k+1}º</span>${esc(pt.name)}</p><div class="meal-actions"><button class="${isFav(pt)?'on':''}" aria-label="Favorito" title="Favorito" onclick='MF.fav(${JSON.stringify(pt).replaceAll("'","&#39;")})'>${isFav(pt)?"❤️":"♡"}</button><button class="rate ${ratingOf(pt)===1?'like-on':''}" title="Nos gusta" aria-label="Nos gusta" onclick="MF.ratePart(${i},'${t}',${k},1)">👍</button><button class="rate ${ratingOf(pt)===-1?'dislike-on':''}" title="No nos gusta" aria-label="No nos gusta" onclick="MF.ratePart(${i},'${t}',${k},-1)">👎</button></div></div>`).join("")+`<div class="meal-actions whole"><button class="swap" onclick="MF.regen(${i},'${t}')">Cambiar</button><button class="${d[lk]?'on':''}" aria-label="Bloquear" title="Bloquear" onclick="MF.lock(${i},'${lk}')">🔒</button></div>`:`<p class="meal">${esc(d[t].name)}</p><div class="meal-actions"><button class="swap" onclick="MF.regen(${i},'${t}')">Cambiar</button><button class="${isFav(d[t])?'on':''}" aria-label="Favorito" title="Favorito" onclick='MF.fav(${JSON.stringify(d[t]).replaceAll("'","&#39;")})'>${isFav(d[t])?"❤️":"♡"}</button><button class="rate ${ratingOf(d[t])===1?'like-on':''}" title="Nos gusta" aria-label="Nos gusta" onclick="MF.rateMeal(${i},'${t}',1)">👍</button><button class="rate ${ratingOf(d[t])===-1?'dislike-on':''}" title="No nos gusta: no volverá a salir" aria-label="No nos gusta" onclick="MF.rateMeal(${i},'${t}',-1)">👎</button><button class="${d[lk]?'on':''}" aria-label="Bloquear" title="Bloquear" onclick="MF.lock(${i},'${lk}')">🔒</button></div>`}</div>`;return`<article class="day-card ${isToday?'today':''} ${d.lockedDay?'locked':''}" id="day-${i}"><header class="day-head"><span class="day-num">${dt.getDate()}</span><div><h3 class="day-name">${esc(d.day)}</h3><div class="day-month">${isToday?'<span class="today-flag">Hoy</span> · ':''}${MONTHS[dt.getMonth()]}</div></div>${d.lockedDay?'<span class="lock-flag" aria-label="Día bloqueado">🔒</span>':''}</header>${coleLines.length?`<section class="cole"><div class="cole-label">En el cole</div><ul>${coleLines.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>${tags.length?`<div class="tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}</section>`:`<section class="cole empty">${esc(cole)}</section>`}${meal("lunch","Comida","adultos","lockedLunch")}${meal("dinner","Cena","familia","lockedDinner")}<div class="note ${esc(liveNote.class)}">${esc(liveNote.text)}</div><div class="day-actions"><button class="${d.lockedDay?'on':''}" onclick="MF.lock(${i},'lockedDay')">🔒 Bloquear día</button><button onclick="MF.manual(${i})">Quiero…</button></div></article>`}).join("")}
+function renderSchool(){const school=getSchool(),cur=document.getElementById("schoolCurrent"),prev=document.getElementById("schoolPreview");if(!school){cur.textContent="PDF actual: sin cargar";prev.textContent="Todavía no hay menú escolar cargado.";return}cur.textContent=`PDF actual: ${cap(school.month)} ${school.year}`;const parsed=school.parsedDays||{},byDate=school.parsedByDate||{};prev.innerHTML=`<p><strong>${cap(school.month)} ${school.year}</strong></p>`+DAYS.map((d,i)=>{const dk=key(addDays(currentWeekStart,i));return`<div class="school-day"><strong>${d} ${fmtShort(addDays(currentWeekStart,i))}</strong><br>${esc(cleanSchoolText(byDate[dk]||parsed[i])||"Sin menú para este día")}</div>`}).join("")}
+function renderHistory(){const weeks=Object.values(getWeeks()).sort((a,b)=>b.id.localeCompare(a.id)),list=document.getElementById("historyList");if(!weeks.length){list.innerHTML=`<div class="muted">Todavía no hay semanas guardadas.</div>`;return}list.innerHTML=weeks.map(w=>`<div class="history-item"><div class="row space"><strong>Semana ${esc(w.range)}</strong><span class="muted">${esc(w.schoolPdf)}</span></div><div class="small-actions"><button onclick="MF.goToWeek('${w.id}')">Ver</button><button onclick="MF.dupFrom('${w.id}')">Duplicar desde aquí</button><button onclick="MF.status('${w.id}','⭐ Gustó mucho')">⭐ Gustó mucho</button><button onclick="MF.status('${w.id}','😐 Regular')">😐 Regular</button><button onclick="MF.status('${w.id}','❌ No repetir')">❌ No repetir</button></div><div class="muted">${esc(w.status||"Sin valoración")}</div></div>`).join("")}
+function renderShopping(){const week=getWeeks()[key(currentWeekStart)],data=buildShopping(week),checks=getChecks(),box=document.getElementById("shoppingList");if(!week){box.innerHTML=`<div class="muted">Genera primero una semana.</div>`;return}box.innerHTML=Object.entries(data).map(([cat,items])=>{const arr=Object.entries(items);if(!arr.length)return"";return`<div class="shop-card"><h3>${cat}</h3>${arr.map(([name,count])=>{const id=`${cat}:${name}`;return`<label class="check"><input type="checkbox" data-check="${esc(id)}" ${checks[id]?"checked":""}> <span>${esc(name)}${count>1?` ×${count}`:""}</span></label>`}).join("")}</div>`}).join("")||`<div class="muted">Sin ingredientes.</div>`;document.querySelectorAll("[data-check]").forEach(i=>i.onchange=e=>{const c=getChecks();c[e.target.dataset.check]=e.target.checked;setChecks(c)})}
+function renderFavorites(){const favs=Object.values(getFavs()),box=document.getElementById("favoritesList");if(!favs.length){box.innerHTML=`<div class="muted">Todavía no has marcado platos favoritos.</div>`;return}box.innerHTML=favs.map(f=>`<div class="fav-row"><div class="row space"><strong>❤️ ${esc(f.name)}</strong><span class="tag">${esc(f.group||"plato")}</span></div><div class="small-actions"><button onclick='MF.useFav(${JSON.stringify(f).replaceAll("'","&#39;")})'>Usar esta semana</button><button class="danger" onclick="MF.delFav('${dishId(f)}')">Quitar</button></div></div>`).join("")}
+function renderRatings(){const box=document.getElementById("ratingsList");if(!box)return;const all=Object.entries(getRatings()),row=([id,r])=>`<div class="fav-row"><div class="row space"><strong>${r.v===1?"👍":"👎"} ${esc(r.name)}</strong><span class="tag">${esc(r.group||"plato")}</span></div><div class="small-actions"><button class="danger" onclick="MF.delRating('${esc(id)}')">Quitar</button></div></div>`,likes=all.filter(([,r])=>r.v===1),dis=all.filter(([,r])=>r.v===-1);box.innerHTML=all.length?`${likes.length?`<h3>Nos gustan</h3>${likes.map(row).join("")}`:""}${dis.length?`<h3>No nos gustan</h3>${dis.map(row).join("")}`:""}`:`<div class="muted">Todavía no habéis valorado platos. Usa 👍 y 👎 en las tarjetas del menú.</div>`}
+function renderRules(){const r=getRules(),box=document.getElementById("rulesList");box.innerHTML=r.map((rule,i)=>`<div class="rule-row"><div class="row space"><span>${esc(rule)}</span><button class="danger" onclick="MF.delRule(${i})">Borrar</button></div></div>`).join("")}
+function renderRestrictions(){const r=getRestrictions(),box=document.getElementById("restrictionsList");box.innerHTML=r.length?r.map((ing,i)=>`<div class="rule-row"><div class="row space"><span>🚫 ${esc(ing)}</span><button class="danger" onclick="MF.delRestriction(${i})">Borrar</button></div></div>`).join(""):`<div class="muted">Sin restricciones activas.</div>`}
+function renderManualOptions(){document.getElementById("manualDay").innerHTML=DAYS.map((d,i)=>`<option value="${i}">${d} ${fmtShort(addDays(currentWeekStart,i))}</option>`).join("")}function showTab(tab){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));["menu","cole","compra","favoritos","historial","reglas"].forEach(id=>document.getElementById(`tab-${id}`).classList.toggle("hidden",id!==tab))}function openManual(i=0){ensureWeek();document.getElementById("manualDay").value=i;document.getElementById("manualDialog").showModal()}
+window.MF={ratePart(i,type,k,v){const w=getWeeks()[key(currentWeekStart)],pt=w&&w.days[i]&&w.days[i][type]&&(w.days[i][type].parts||[])[k];if(!pt)return;setRating(pt,v);render()},rateMeal(i,type,v){const w=getWeeks()[key(currentWeekStart)];if(!w||!w.days[i])return;const d=w.days[i],res=setRating(d[type],v),locked=d.lockedDay||(type==="lunch"?d.lockedLunch:d.lockedDinner);if(res===-1&&!locked){regenMeal(i,type);return}render()},delRating(id){const r=getRatings();delete r[id];setRatings(r);render()},goToWeek(id){currentWeekStart=parseDate(id);showTab("menu");render()},status(id,status){const w=getWeeks();if(w[id]){w[id].status=status;setWeeks(w);renderHistory()}},dupFrom(id){const weeks=getWeeks(),src=weeks[id];if(!src)return;const next=addDays(currentWeekStart,7),copy=JSON.parse(JSON.stringify(src));copy.id=key(next);copy.range=fmtRange(next);copy.createdAt=new Date().toISOString();copy.days=copy.days.map((d,i)=>({...d,date:key(addDays(next,i))}));retargetWeek(copy);weeks[copy.id]=copy;setWeeks(weeks);currentWeekStart=next;render()},lock(i,field){const weeks=getWeeks(),w=weeks[key(currentWeekStart)];if(!w)return;w.days[i][field]=!w.days[i][field];setWeeks(weeks);render()},regen:regenMeal,fav:toggleFav,manual:openManual,delFav(id){const f=getFavs();delete f[id];setFavs(f);render()},useFav(f){openManual(0);document.getElementById("manualName").value=f.name;document.getElementById("manualGroup").value=f.group||"rapida";document.getElementById("manualItems").value=(f.items||[]).join(", ")},delRule(i){const r=getRules();r.splice(i,1);setRules(r);renderRules()},delRestriction(i){const r=getRestrictions();r.splice(i,1);setRestrictions(r);renderRestrictions()}};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));document.getElementById("goColeBtn").onclick=()=>showTab("cole");document.getElementById("prevWeekBtn").onclick=()=>{currentWeekStart=addDays(currentWeekStart,-7);render()};document.getElementById("currentWeekBtn").onclick=()=>{currentWeekStart=monday(new Date());render()};document.getElementById("currentWeekBtn2").onclick=()=>{currentWeekStart=monday(new Date());render()};document.getElementById("nextWeekBtn").onclick=()=>{currentWeekStart=addDays(currentWeekStart,7);render()};document.getElementById("generateBtn").onclick=()=>generateWeek(false);document.getElementById("duplicateBtn").onclick=duplicateWeek;document.getElementById("manualBtn").onclick=()=>openManual(0);document.getElementById("manualCancelBtn").onclick=()=>document.getElementById("manualDialog").close();document.getElementById("manualSaveBtn").onclick=()=>{ensureWeek();const i=+document.getElementById("manualDay").value,type=document.getElementById("manualType").value,name=document.getElementById("manualName").value.trim();if(!name){alert("Escribe el plato.");return}const group=document.getElementById("manualGroup").value,items=document.getElementById("manualItems").value.split(",").map(x=>x.trim()).filter(Boolean),pieces=name.split("+").map(x=>x.trim()).filter(Boolean).map(x=>x.charAt(0).toUpperCase()+x.slice(1)),guess=t=>{const g=tagsFromText(t);return g.find(x=>["pescado","carne","huevo","legumbre","pasta","arroz"].includes(x))||(/sopa|crema|pur[eé]|ensalada|verdura|gazpacho|menestra|pisto|br[oó]coli|calabac|jud[ií]as verdes/i.test(t)?"verdura":group)},parts=pieces.map(x=>({name:x,group:guess(x),items:[x]})),mainGroup=(parts.find(x=>["pescado","carne","huevo"].includes(x.group))||{}).group||group,dish=pieces.length>1?{name:pieces.join(" + "),group:mainGroup,items:items.length?items:pieces,manual:true,parts}:{name,group,items:items.length?items:[name],manual:true};setMeal(i,type,dish);if(document.getElementById("manualFav").checked)toggleFav(dish);document.getElementById("manualDialog").close();document.getElementById("manualName").value="";document.getElementById("manualItems").value=""};document.getElementById("printBtn").onclick=()=>exportWeekPdf().catch(e=>{console.error(e);alert("No se pudo crear el PDF: "+e.message)});document.getElementById("resetThisWeekBtn").onclick=()=>{if(confirm("¿Borrar el menú de esta semana?"))deleteWeek()};document.getElementById("clearChecksBtn").onclick=()=>{localStorage.removeItem(K.checks);renderShopping()};document.getElementById("clearSchoolBtn").onclick=()=>{if(confirm("¿Borrar menú escolar cargado?")){localStorage.removeItem(K.school);render()}};document.getElementById("uploadPdfBtn").onclick=()=>document.getElementById("schoolPdfInput").click();document.getElementById("schoolPdfInput").onchange=async(e)=>{const file=e.target.files[0];if(!file)return;const status=document.getElementById("schoolPdfStatus");status.textContent=`📄 Leyendo ${file.name}…`;try{const grid=await extractSchoolGrid(file).catch(err=>{console.warn(err);return null});if(grid){document.getElementById("schoolText").value=grid.text;status.textContent=`✅ Menú de ${grid.label}: ${grid.days} días leídos${grid.holidays.length?` · festivo${grid.holidays.length>1?"s":""}: ${grid.holidays.join(", ")}`:""}. Revisa el texto y pulsa "Guardar menú escolar".`;return}const gridText=await extractPdfMenuGrid(file);if(gridText){document.getElementById("schoolText").value=gridText;const numDays=(gridText.match(/^\d{1,2}:/gm)||[]).length;status.textContent=`✅ Detecté una tabla-calendario y separé ${numDays} días correctamente. Revisa el texto y pulsa "Guardar menú escolar".`;return}const text=await extractPdfText(file);if(!text){status.textContent="⚠️ No se pudo extraer texto de este PDF (puede ser una imagen escaneada). Prueba a pegar el texto a mano.";return}document.getElementById("schoolText").value=text;status.textContent="✅ PDF leído. Revisa que cada día tenga su propia línea (ej. \"Lunes: plato\") antes de guardar — si tu PDF es una tabla, puede que necesites ordenar el texto a mano."}catch(err){console.error(err);status.textContent="⚠️ Error leyendo el PDF: "+err.message}e.target.value=""};document.getElementById("saveSchoolBtn").onclick=()=>{const text=document.getElementById("schoolText").value.trim();if(!text){alert("Pega primero el texto del menú escolar.");return}const d=detectSchoolMonthYear(text),parsed=parseSchoolLines(text,d);setSchool({text,parsedDays:parsed.parsedDays,parsedByDate:parsed.parsedByDate,month:d.month,monthIndex:d.monthIndex,year:d.year,savedAt:new Date().toISOString()});alert(`Menú escolar cargado: ${cap(d.month)} ${d.year}`);render()};document.getElementById("sampleJuneBtn").onclick=()=>{document.getElementById("schoolText").value=`Menú escolar junio 2026
+
+Lunes 8: Lentejas con verduras + Revuelto de calabacín y queso
+
+Martes 9: Paella con verduritas de la huerta y pollo + Palometa con tomate
+
+Miércoles 10: Ensalada campera + Pollo en pepitoria
+
+Jueves 11: Coditos a la napolitana con hierbas provenzales + Merluza a la gallega
+
+Viernes 12: Gazpacho andaluz + Albóndigas de ternera a la jardinera
+
+Lunes 15: Arroz con tomate confitado + Tortilla francesa de pavo
+
+Martes 16: Sopa de fideos + Cocido vegetal
+
+Miércoles 17: Ensalada de pasta + Merluza a la andaluza
+
+Jueves 18: Crema de calabacín ecológica + Pollo asado en su jugo
+
+Viernes 19: Ensalada campera + Pizza de jamón york y queso`};document.getElementById("addRuleBtn").onclick=()=>{const input=document.getElementById("newRuleInput"),v=input.value.trim();if(!v)return;const r=getRules();r.push(v);setRules(r);input.value="";renderRules()};document.getElementById("addRestrictionBtn").onclick=()=>{const input=document.getElementById("newRestrictionInput"),v=input.value.trim();if(!v)return;const r=getRestrictions();if(!r.some(x=>normalize(x)===normalize(v)))r.push(v);setRestrictions(r);input.value="";renderRestrictions()};document.getElementById("restoreRulesBtn").onclick=()=>{if(confirm("¿Restaurar reglas base?")){setRules([...BASE_RULES]);renderRules()}};document.getElementById("resetAllBtn").onclick=()=>{if(confirm("¿Seguro? Esto borra todos los datos locales de la app.")){Object.values(K).forEach(k=>localStorage.removeItem(k));currentWeekStart=monday(new Date());render()}};boot()})();
+</script>
+</body>
+</html>
